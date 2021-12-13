@@ -1,4 +1,4 @@
-# sol-tracker
+# solana-tracker
 Django application to track Solana investments, all you need is the public key!
 
 Functionalities:
