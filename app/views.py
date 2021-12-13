@@ -110,6 +110,6 @@ def get_wallet_table_data(wallet_records):
 def get_wallet_sum_row_data(sol, usd):
     return {
         'display_name': 'Total',
-        'sol': sum(sol),
+        'sol': round(sum(sol), 5),
         'usd': round(sum(usd), 2),
     }
