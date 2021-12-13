@@ -30,11 +30,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['intense-brook-56676.herokuapp.com']
 
-# CSRF_TRUSTED_ORIGINS = ['https://intense-brook-56676.herokuapp.com']
-
-CORS_ORIGIN_WHITELIST = ['intense-brook-56676.herokuapp.com']
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -77,6 +72,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'solana-tracker.wsgi.application'
 
+CSRF_TRUSTED_ORIGINS = ['https://intense-brook-56676.herokuapp.com']
+
+CORS_ORIGIN_WHITELIST = ['intense-brook-56676.herokuapp.com']
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
