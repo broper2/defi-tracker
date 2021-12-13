@@ -21,6 +21,7 @@ jsonrpcclient==4.0.2
 jsonrpcserver==5.0.5
 jsonschema==3.2.0
 OSlash==0.6.3
+psycopg2-binary==2.9.2
 pycparser==2.21
 PyNaCl==1.4.0
 pyrsistent==0.18.0
