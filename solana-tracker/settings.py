@@ -30,6 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['https://intense-brook-56676.herokuapp.com']
 
+CSRF_TRUSTED_ORIGINS = ['*']
+
 
 # Application definition
 
