@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+{% extends "base_generic.html" %}
+
+{% block content %} <div class="row">
+        <div class="d-flex flex-column">
+        <div class="pl-5">
+            <h2>Track new validator:</h2>
+            <form method="post" action="/validators">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if form.errors %}
+                {% for field in form %}
+                {% for error in field.errors %}
+                <p> {{ error }} </p>
+                {% endfor %}
+                {% endfor %}
+                {% endif %}
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+        <div class="d-flex flex-column">
+            {% if data %}
+                <canvas id="myChart" height="400" width="400"></canvas>
+                <script>
+                    const data = {{ data|safe }};
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            responsive: true,
+                                interaction: {
+                                mode: 'index',
+                                    intersect: false,
+                            },
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: 'Solana Validator Tracker',},
+                            legend: {
+                                display: true,
+                                position: 'bottom'
+                            },
+                            scales: {
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Credit Return Rate'
+                                    }
+                                }],
+                                xAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Solana Epoch'
+                                    }
+                                }],
+                                y: {
+                                    type: 'linear',
+                                        display: true,
+                                        position: 'left',
+                                },
+                                y1: {
+                                    type: 'linear',
+                                        display: true,
+                                        position: 'right',
+
+                                        // grid line settings
+                                        grid: {
+                                        drawOnChartArea: false, // only want the grid lines for one axis to show up
+                                    },
+                                },
+                            }
+                    },
+                });
+                </script>
+            {% endif %}
+        </div>
+    </div>
+
+
+{% endblock %}
