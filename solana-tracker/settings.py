@@ -30,11 +30,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['intense-brook-56676.herokuapp.com']
 
-CSRF_TRUSTED_ORIGINS = ['https://intense-brook-56676.herokuapp.com']
+# CSRF_TRUSTED_ORIGINS = ['https://intense-brook-56676.herokuapp.com']
 
 CORS_ORIGIN_WHITELIST = ['intense-brook-56676.herokuapp.com']
 
-# CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
