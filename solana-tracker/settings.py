@@ -142,4 +142,4 @@ LOGIN_REDIRECT_URL = '/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #TODO enable email functionality
 
 import django_heroku
-django_heroku.settings(locals())
+django_heroku.settings(locals(), secret_key=True)
