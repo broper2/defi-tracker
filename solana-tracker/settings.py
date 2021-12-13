@@ -28,10 +28,13 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://intense-brook-56676.herokuapp.com']
+ALLOWED_HOSTS = ['intense-brook-56676.herokuapp.com']
 
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['intense-brook-56676.herokuapp.com']
 
+CORS_ORIGIN_WHITELIST = ['intense-brook-56676.herokuapp.com']
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
