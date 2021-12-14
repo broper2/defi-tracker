@@ -9,10 +9,11 @@ from solana.rpc.api import Client
 
 class SolanaNetworkInterface(object):
 
-    def __init__(self):
+    def __init__(self, cache_validator_data=True):
         self.solana_rpc_client = Client(SOLANA_PRODUCTION_API_URL)
         self.vote_account_keys = []
-        self._cache_vote_account_data()
+        if cache_validator_data:
+            self._cache_vote_account_data()
 
     def _cache_vote_account_data(self):
         try:
@@ -45,3 +46,12 @@ class SolanaNetworkInterface(object):
         except Exception:
             raise SolanaExternalNetworkException('Error in fetching account balance from Solana network')
         return round_sol(account_data['result']['value'] * LAMPORT_TO_SOL_RATE)
+
+    def is_valid_account_pubkey(self, pubkey):
+        if not self.solana_rpc_client.is_connected():
+            return False
+        try:
+            account_data = self._get_account_data(pubkey)
+            return 'error' not in account_data
+        except Exception:
+            return False
