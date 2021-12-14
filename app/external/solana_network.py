@@ -48,10 +48,13 @@ class SolanaNetworkInterface(object):
         return round_sol(account_data['result']['value'] * LAMPORT_TO_SOL_RATE)
 
     def is_valid_account_pubkey(self, pubkey):
-        if not self.solana_rpc_client.is_connected():
+        if not self._is_connected():
             return False
         try:
             account_data = self._get_account_data(pubkey)
             return 'error' not in account_data
         except Exception:
             return False
+
+    def _is_connected(self):
+        return self.solana_rpc_client.is_connected()
