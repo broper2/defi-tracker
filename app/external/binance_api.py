@@ -10,9 +10,9 @@ class BinanceApiInterface(object):
     def __init__(self):
         self.sol_price_url = BINANCE_SOL_PRICE_URL
 
-    def get_usd_from_sols(self, sols):
+    def get_usd_from_sol(self, sol):
         usd_sol_rate = self._get_sol_to_usd_rate()
-        return [round_usd(sol * usd_sol_rate) for sol in sols]
+        return round_usd(sol * usd_sol_rate)
 
     def _get_sol_to_usd_rate(self):
         try:

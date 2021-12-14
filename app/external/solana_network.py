@@ -1,10 +1,15 @@
+import collections
+
+from app.adapters.solana_account import SolanaAccountDataAdapter
+from app.adapters.solana_validator import SolanaValidatorDataAdapter
 from app.config.constants import SOLANA_PRODUCTION_API_URL
-from app.config.constants import SOLANA_RPC_KEYS, LAMPORT_TO_SOL_RATE
+from app.config.constants import SOLANA_RPC_KEYS
 from app.exceptions.solana_external import SolanaExternalNetworkException
-from app.utils.rounding import round_sol
 from app.utils.timed_cache import timed_cache
-from app.wrappers.solana_validator import SolanaValidatorWrapper
 from solana.rpc.api import Client
+
+
+SolanaQueryData = collections.namedtuple('SolanaQueryData', ['key', 'display_name'])
 
 
 class SolanaNetworkInterface(object):
@@ -30,6 +35,9 @@ class SolanaNetworkInterface(object):
         except Exception:
             raise SolanaExternalNetworkException('Error in initial load of validator data from Solana network')
 
+    def _is_connected(self):
+        return self.solana_rpc_client.is_connected()
+
     def _get_validator_data(self):
         try:
             return self._fetch_validator_data()
@@ -40,29 +48,36 @@ class SolanaNetworkInterface(object):
     def _fetch_validator_data(self):
         return self.solana_rpc_client.get_vote_accounts()['result']['current']
 
-    def get_wrapped_validator_data(self, pubkeys):
+    def get_wrapped_validator_data(self, validator_query_data):
         validator_data = self._get_validator_data()
-        validator_data = [data for data in validator_data if data['votePubkey'] in pubkeys]
-        return [SolanaValidatorWrapper(v_data) for v_data in validator_data]
+        adapter_data = []
+        for query_data in validator_query_data:
+            record_data = self._get_validator_data_by_votekey(query_data.key, validator_data)
+            adapter_data.append((query_data.display_name, record_data))
+        return [SolanaValidatorDataAdapter(*data) for data in adapter_data]
 
-    def _get_account_data(self, pubkey):
+    @staticmethod
+    def _get_validator_data_by_votekey(vote_pubkey, validator_data):
+        for data in validator_data:
+            if data['votePubkey'] == vote_pubkey:
+                return data
+
+    def _get_account_balance(self, pubkey):
         return self.solana_rpc_client.get_balance(pubkey)
 
-    def get_account_sol_balance(self, pubkey):
+    def get_wrapped_account_data(self, query_data):
         try:
-            account_data = self._get_account_data(pubkey)
+            account_balance = self._get_account_balance(query_data.key)
         except Exception:
             raise SolanaExternalNetworkException('Error in fetching account balance from Solana network')
-        return round_sol(account_data['result']['value'] * LAMPORT_TO_SOL_RATE)
+        return SolanaAccountDataAdapter(query_data.display_name, **account_balance['result'])
+
+    def _is_active_pubkey(self, pubkey):
+        account_info = self.solana_rpc_client.get_account_info(pubkey)
+        return account_info and 'error' not in account_info
 
     def is_valid_account_pubkey(self, pubkey):
-        if not self._is_connected():
-            return False
         try:
-            account_data = self._get_account_data(pubkey)
-            return 'error' not in account_data
+            return self._is_connected() and self._is_active_pubkey(pubkey)
         except Exception:
             return False
-
-    def _is_connected(self):
-        return self.solana_rpc_client.is_connected()

@@ -5,7 +5,7 @@ from app.models import SolanaWallet
 
 
 @patch('app.external.binance_api.BinanceApiInterface._get_sol_to_usd_rate', new=lambda *args, **kwargs: float(2))
-@patch('app.external.solana_network.SolanaNetworkInterface.get_account_sol_balance', new=lambda *args, **kwargs: 2)
+@patch('app.external.solana_network.SolanaNetworkInterface._get_account_balance', new=lambda *args, **kwargs: {'result': {'value': 2000000000}})
 @patch('app.external.solana_network.SolanaNetworkInterface._is_connected', new=lambda *args, **kwargs: True)
 class WalletTests(TestCase):
 
@@ -32,7 +32,7 @@ class WalletTests(TestCase):
         self.assertEquals({}, response.context['data'])
         self.assertIn('form', response.context)
 
-    @patch('app.external.solana_network.SolanaNetworkInterface._get_account_data', new=lambda *args, **kwargs: {})
+    @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=lambda *args, **kwargs: True)
     def test_post_valid_wallet_pubkey(self):
         self.client.force_login(self.user1)
         response = self.client.post('/wallets', {'wallet_pubkey': 'pubkey3', 'display_name': 'name3', 'user_id': 'user1'})
@@ -45,7 +45,7 @@ class WalletTests(TestCase):
         self.assertIn('form', response.context)
         self.assertFalse(response.context['form'].errors)
 
-    @patch('app.external.solana_network.SolanaNetworkInterface._get_account_data', new=lambda *args, **kwargs: {'error': 3902})
+    @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=lambda *args, **kwargs: False)
     def test_post_invalid_wallet_pubkey(self):
         self.client.force_login(self.user1)
         response = self.client.post('/wallets', {'wallet_pubkey': 'invalid_pubkey', 'display_name': 'name4', 'user_id': 'user1'})

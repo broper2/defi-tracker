@@ -3959,7 +3959,7 @@
         scrollParents: []
       };
 
-      // get reference and popper elements (allow jQuery wrappers)
+      // get reference and popper elements (allow jQuery adapters)
       this.reference = reference && reference.jquery ? reference[0] : reference;
       this.popper = popper && popper.jquery ? popper[0] : popper;
 

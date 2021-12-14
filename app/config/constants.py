@@ -10,6 +10,8 @@ SOLANA_RPC_KEYS = {
     'vote_pubkey' : 'votePubkey',
 }
 
+SOLANA_RPC_ACCOUNT_VALUE_KEY = 'value'
+
 LAMPORT_TO_SOL_RATE = 0.000000001
 
 BINANCE_SOL_PRICE_URL = 'https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDC'
