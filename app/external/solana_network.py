@@ -11,9 +11,17 @@ class SolanaNetworkInterface(object):
 
     def __init__(self, cache_validator_data=True):
         self.solana_rpc_client = Client(SOLANA_PRODUCTION_API_URL)
-        self.vote_account_keys = []
+        self._vote_account_keys = []
         if cache_validator_data:
             self._cache_vote_account_data()
+
+    @property
+    def vote_account_keys(self):
+        return self._vote_account_keys
+
+    @vote_account_keys.setter
+    def vote_account_keys(self, keys):
+        self._vote_account_keys = keys
 
     def _cache_vote_account_data(self):
         try:
