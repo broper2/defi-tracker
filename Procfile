@@ -1,2 +1,2 @@
-web: gunicorn solana-tracker.wsgi --log-file -
+web: gunicorn solana_tracker.wsgi --log-file -
 release: python manage.py migrate
