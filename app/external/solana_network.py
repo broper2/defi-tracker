@@ -1,6 +1,7 @@
 from app.config.constants import SOLANA_PRODUCTION_API_URL
-from app.config.constants import SOLANA_RPC_KEYS, LAMPORT_TO_SOL_RATE, ROUNDING_DECIMAL_PLACES
+from app.config.constants import SOLANA_RPC_KEYS, LAMPORT_TO_SOL_RATE
 from app.exceptions.solana_external import SolanaExternalNetworkException
+from app.utils.rounding import round_sol
 from app.utils.timed_cache import timed_cache
 from app.wrappers.solana_validator import SolanaValidatorWrapper
 from solana.rpc.api import Client
@@ -43,4 +44,4 @@ class SolanaNetworkInterface(object):
             account_data = self._get_account_data(pubkey)
         except Exception:
             raise SolanaExternalNetworkException('Error in fetching account balance from Solana network')
-        return round(account_data['result']['value'] * LAMPORT_TO_SOL_RATE, ROUNDING_DECIMAL_PLACES)
+        return round_sol(account_data['result']['value'] * LAMPORT_TO_SOL_RATE)

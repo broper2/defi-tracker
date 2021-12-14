@@ -2,6 +2,7 @@ import requests
 
 from app.config.constants import BINANCE_SOL_PRICE_URL
 from app.exceptions.binance_external import BinanceApiException
+from app.utils.rounding import round_usd
 
 
 class BinanceApiInterface(object):
@@ -11,7 +12,7 @@ class BinanceApiInterface(object):
 
     def get_usd_from_sols(self, sols):
         usd_sol_rate = self._get_sol_to_usd_rate()
-        return [round(sol * usd_sol_rate, 2) for sol in sols]
+        return [round_usd(sol * usd_sol_rate) for sol in sols]
 
     def _get_sol_to_usd_rate(self):
         try:

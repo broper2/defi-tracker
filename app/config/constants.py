@@ -14,5 +14,4 @@ LAMPORT_TO_SOL_RATE = 0.000000001
 
 BINANCE_SOL_PRICE_URL = 'https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDC'
 
-ROUNDING_DECIMAL_PLACES = 6
 

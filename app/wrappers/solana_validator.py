@@ -1,4 +1,5 @@
-from app.config.constants import SOLANA_RPC_KEYS, ROUNDING_DECIMAL_PLACES
+from app.config.constants import SOLANA_RPC_KEYS
+from app.utils.rounding import round_sol
 
 
 class SolanaValidatorWrapper(object):
@@ -17,7 +18,7 @@ class SolanaValidatorWrapper(object):
         #   (epoch #, end epoch credit, start epoch credit)
         history = []
         if self.epoch_credits:
-            history = [round(epoch_entry[1] / epoch_entry[2], ROUNDING_DECIMAL_PLACES) for epoch_entry in
+            history = [round_sol(epoch_entry[1] / epoch_entry[2]) for epoch_entry in
                        self.epoch_credits]
         return history
 

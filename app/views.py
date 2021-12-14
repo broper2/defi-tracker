@@ -9,6 +9,7 @@ from .external.solana_network import SolanaNetworkInterface
 from .forms import SolanaValidatorForm, SolanaWalletForm
 from .models import SolanaValidator, SolanaWallet
 from .utils.colors import get_random_hex_code
+from .utils.rounding import round_sol, round_usd
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +111,6 @@ def get_wallet_table_data(wallet_records):
 def get_wallet_sum_row_data(sol, usd):
     return {
         'display_name': 'Total',
-        'sol': round(sum(sol), 5),
-        'usd': round(sum(usd), 2),
+        'sol': round_sol(sum(sol)),
+        'usd': round_usd(sum(usd)),
     }
