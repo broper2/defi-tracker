@@ -7,7 +7,7 @@ class SolanaAccountDataAdapter(object):
     def __init__(self, display_name, **data):
         self.display_name = display_name
         self.lamport_value = data.get(SOLANA_RPC_KEYS['value'])
-        self.binance_api = BinanceApiInterface()
+        self.binance_api = BinanceApiInterface.instance()
 
     @property
     def sol_value(self):
