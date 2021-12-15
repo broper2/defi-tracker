@@ -1,4 +1,4 @@
-class SolanaExternalNetworkException(Exception):
+from app.exceptions.solana_tracker_base import SolanaTrackerProcessingException
 
-    def __init__(self, msg):
-        self.msg = msg
+
+class SolanaExternalNetworkException(SolanaTrackerProcessingException): pass
