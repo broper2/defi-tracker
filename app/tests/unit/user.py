@@ -3,7 +3,7 @@ from django.contrib.auth import get_user
 from django.test import TestCase
 
 
-class ValidatorTests(TestCase):
+class CreateUserTests(TestCase):
 
 
     @classmethod
