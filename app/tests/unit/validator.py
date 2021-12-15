@@ -4,8 +4,7 @@ from django.contrib.auth.models import User
 from app.models import SolanaValidator
 from .constants import MOCK_VALIDATOR_DATA
 
-@patch('app.external.solana_network.SolanaNetworkInterface._fetch_validator_data', new=lambda *args, **kwargs: MOCK_VALIDATOR_DATA)
-@patch('app.external.solana_network.SolanaNetworkInterface.vote_account_keys', ['pubkey1', 'pubkey2', 'pubkey3'])
+@patch('app.external.solana_network.SolanaNetworkInterface._fetch_and_cache_validator_data', new=lambda *args, **kwargs: MOCK_VALIDATOR_DATA)
 class ValidatorTests(TestCase):
 
     @classmethod

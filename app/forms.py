@@ -35,7 +35,7 @@ class SolanaWalletForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(SolanaWalletForm, self).__init__(*args, **kwargs)
         self.initial['user_id'] = user
-        self.solana_network_interface = SolanaNetworkInterface(cache_validator_data=False)
+        self.solana_network_interface = SolanaNetworkInterface(initial_validator_data_cache=False)
 
     def clean(self):
         super().clean()
