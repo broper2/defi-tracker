@@ -1,8 +1,8 @@
 import collections
 from requests.exceptions import RequestException
 
-from app.adapters.solana_account import SolanaAccountDataAdapter
-from app.adapters.solana_validator import SolanaValidatorDataAdapter
+from app.adapters.account.builder import get_account_adapter
+from app.adapters.validator.builder import get_validator_adapter
 from app.config.constants import SOLANA_PRODUCTION_API_URL, SOLANA_RPC_KEYS
 from app.exceptions.solana_external import SolanaExternalNetworkException
 from app.utils.timed_cache import timed_cache
@@ -15,6 +15,7 @@ SolanaQueryData = collections.namedtuple('SolanaQueryData', ['key', 'display_nam
 class SolanaNetworkInterface(object):
 
     def __init__(self, initial_validator_data_cache=True):
+        self.network_name = 'Solana'
         self.solana_rpc_client = Client(SOLANA_PRODUCTION_API_URL)
         if initial_validator_data_cache:
             self._request_validator_data()
@@ -28,11 +29,11 @@ class SolanaNetworkInterface(object):
         solana_validator_data = self._request_validator_data()
         zipped_data = self._zip_query_and_validator_data(validator_query_data, solana_validator_data)
         adapter_data = [(query_data.display_name, validator_data) for query_data, validator_data in zipped_data]
-        return [SolanaValidatorDataAdapter(*data) for data in adapter_data] #TODO avoid explicit class name
+        return [get_validator_adapter(self.network_name, *data) for data in adapter_data]
 
     def get_wrapped_account_data(self, query_data):
         account_balance = self._get_account_balance(query_data.key)
-        return SolanaAccountDataAdapter(query_data.display_name, **account_balance['result']) #TODO avoid explicit class name
+        return get_account_adapter(self.network_name, query_data.display_name, **account_balance['result'])
 
     def is_valid_account_pubkey(self, pubkey):
         return self._is_connected() and self._is_active_pubkey(pubkey)
