@@ -2,6 +2,7 @@ import requests
 
 from app.config.constants import BINANCE_SOL_PRICE_URL
 from app.exceptions.binance_external import BinanceApiException
+
 from app.utils.rounding import round_usd
 
 
@@ -17,8 +18,8 @@ class BinanceApiInterface(object):
     def _get_sol_to_usd_rate(self):
         try:
             resp = requests.get(self.sol_price_url)
-        except Exception:
-            raise BinanceApiException('Error when fetching SOLUSD price from Binance')
+        except requests.exceptions.RequestException:
+            raise BinanceApiException('Error when requesting SOLUSD price from Binance')
         if resp.status_code != 200:
             raise BinanceApiException(f'Error from Binance api - received status_code {resp.status_code}')
         return float(resp.json()['price'])
