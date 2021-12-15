@@ -1,4 +1,4 @@
-from app.config.constants import SOLANA_RPC_ACCOUNT_VALUE_KEY, LAMPORT_TO_SOL_RATE
+from app.config.constants import SOLANA_RPC_KEYS, LAMPORT_TO_SOL_RATE
 from app.external.binance_api import BinanceApiInterface
 
 
@@ -6,7 +6,7 @@ class SolanaAccountDataAdapter(object):
 
     def __init__(self, display_name, **data):
         self.display_name = display_name
-        self.lamport_value = data.get(SOLANA_RPC_ACCOUNT_VALUE_KEY)
+        self.lamport_value = data.get(SOLANA_RPC_KEYS['value'])
         self.binance_api = BinanceApiInterface()
 
     @property
