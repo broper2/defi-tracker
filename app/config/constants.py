@@ -8,9 +8,15 @@ SOLANA_RPC_KEYS = {
     'node_pubkey' : 'nodePubkey',
     'root_slot' : 'rootSlot',
     'vote_pubkey' : 'votePubkey',
+    'value': 'value',
+    'result': 'result',
+    'current': 'current',
+    'error': 'error',
 }
 
-SOLANA_RPC_ACCOUNT_VALUE_KEY = 'value'
+BINANCE_API_KEYS = {
+    'price': 'price'
+}
 
 LAMPORT_TO_SOL_RATE = 0.000000001
 

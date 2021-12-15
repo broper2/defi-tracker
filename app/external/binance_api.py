@@ -1,6 +1,6 @@
 import requests
 
-from app.config.constants import BINANCE_SOL_PRICE_URL
+from app.config.constants import BINANCE_SOL_PRICE_URL, BINANCE_API_KEYS
 from app.exceptions.binance_external import BinanceApiException
 
 from app.utils.rounding import round_usd
@@ -22,4 +22,4 @@ class BinanceApiInterface(object):
             raise BinanceApiException('Error when requesting SOLUSD price from Binance')
         if resp.status_code != 200:
             raise BinanceApiException(f'Error from Binance api - received status_code {resp.status_code}')
-        return float(resp.json()['price'])
+        return float(resp.json()[BINANCE_API_KEYS['price']])
