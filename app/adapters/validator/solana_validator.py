@@ -2,7 +2,6 @@ import numpy as np
 
 from app.config.constants import SOLANA_RPC_KEYS, SOLANA_VALIDATOR_HISTORY_LENGTH
 from app.external.solana_network import SolanaNetworkInterface
-from app.utils.rounding import round_sol
 
 
 class SolanaValidatorDataAdapter(object):
@@ -25,10 +24,10 @@ class SolanaValidatorDataAdapter(object):
         return [data.display_name for data in self.tracked_validators]
 
     def get_epochs(self):
-        return [self.solana_network_interface.last_epoch + i for i in range(-4, 1)]
+        return [self.solana_network_interface.last_epoch + i for i in range(1-SOLANA_VALIDATOR_HISTORY_LENGTH, 1)]
 
     def _get_validator_network_data(self):
-        cluster_data = self.solana_network_interface.get_validator_data()  # TODO test this normalization
+        cluster_data = self.solana_network_interface.get_validator_data()
         for validator_data in cluster_data:
             validator_data[SOLANA_RPC_KEYS['epoch_credits']] = self._normalize_history_length(
                 validator_data[SOLANA_RPC_KEYS['epoch_credits']]

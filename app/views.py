@@ -7,7 +7,6 @@ from django.shortcuts import render
 from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.account.builder import get_account_adapter
 from app.basetypes import SolanaAccountData, SolanaValidatorData
-from app.external.solana_network import SolanaNetworkInterface
 from app.forms import SolanaValidatorForm, SolanaWalletForm
 from app.models import SolanaValidator, SolanaWallet
 from app.utils.ui_data import get_validator_chart_data, get_wallet_table_data
@@ -15,7 +14,6 @@ from app.utils.ui_data import get_validator_chart_data, get_wallet_table_data
 logger = logging.getLogger(__name__)
 
 
-solana_network_interface = SolanaNetworkInterface.instance()
 NETWORK = 'SOLANA'  # If extended to other blockchain networks, this could be param in request - hardcoding for now
 
 def index(request):
@@ -45,7 +43,8 @@ def validators(request):
         if form.is_valid():
             form.save()
     tracked_validator_models = get_validator_records(current_user_id)
-    tracked_validators = [SolanaValidatorData(model.validator_vote_pubkey, model.display_name) for model in tracked_validator_models]
+    tracked_validators = [SolanaValidatorData(model.validator_vote_pubkey, model.display_name) for model in
+                          tracked_validator_models]
     validator_adapter = get_validator_adapter(NETWORK, tracked_validators)
     chart_data = get_validator_chart_data(validator_adapter)
     if not form:

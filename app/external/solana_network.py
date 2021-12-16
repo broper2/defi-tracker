@@ -73,7 +73,7 @@ class SolanaNetworkInterface(object):
         except RequestException:
             raise SolanaExternalNetworkException('Error in fetching account information from Solana network')
 
-    @timed_cache(hours=1)
+    @timed_cache(minutes=1)
     def _get_last_epoch(self):
         try:
             return self.solana_rpc_client.get_epoch_info()[SOLANA_RPC_KEYS['result']][SOLANA_RPC_KEYS['epoch']]

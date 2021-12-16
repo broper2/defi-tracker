@@ -8,7 +8,7 @@ def mock_is_active_pubkey(interface, pubkey):
     return pubkey != 'invalid_pubkey'
 
 
-@patch('app.external.binance_api.BinanceApiInterface._get_sol_to_usd_rate', new=lambda *args, **kwargs: float(2))
+@patch('app.external.binance_api.BinanceApiInterface._get_sol_price', new=lambda *args, **kwargs: 1.545454)
 @patch('app.external.solana_network.SolanaNetworkInterface._get_account_balance', new=lambda *args, **kwargs: {'value': 2000000000})
 @patch('app.external.solana_network.SolanaNetworkInterface._is_connected', new=lambda *args, **kwargs: True)
 class WalletTests(TestCase):
@@ -25,8 +25,8 @@ class WalletTests(TestCase):
         self.client.force_login(self.user1)
         response = self.client.get('/wallets')
         expected_data = [
-            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 4.0},
-            {'display_name': 'Total', 'sol': 2, 'usd': 4.0},
+            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09},
+            {'display_name': 'Total', 'sol': 2, 'usd': 3.09},
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
@@ -43,9 +43,9 @@ class WalletTests(TestCase):
         self.client.force_login(self.user1)
         response = self.client.post('/wallets', {'wallet_pubkey': 'pubkey3', 'display_name': 'name3', 'user_id': 'user1'})
         expected_data = [
-            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 4.0},
-            {'display_name': 'name3', 'sol': 2, 'usd': 4.0},
-            {'display_name': 'Total', 'sol': 4, 'usd': 8.0},
+            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09},
+            {'display_name': 'name3', 'sol': 2, 'usd': 3.09},
+            {'display_name': 'Total', 'sol': 4, 'usd': 6.18},
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
@@ -56,8 +56,8 @@ class WalletTests(TestCase):
         self.client.force_login(self.user1)
         response = self.client.post('/wallets', {'wallet_pubkey': 'invalid_pubkey', 'display_name': 'name4', 'user_id': 'user1'})
         expected_data = [
-            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 4.0},
-            {'display_name': 'Total', 'sol': 2, 'usd': 4.0},
+            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09},
+            {'display_name': 'Total', 'sol': 2, 'usd': 3.09},
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)

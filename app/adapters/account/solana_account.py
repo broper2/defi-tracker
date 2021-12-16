@@ -18,7 +18,8 @@ class SolanaAccountDataAdapter(object):
 
     @property
     def usd_value(self):
-        return self.binance_api.get_usd_from_sol(self.sol_value)
+        usd_sol_rate = self.binance_api.get_sol_usd_rate()
+        return self.sol_value * usd_sol_rate
 
     def _get_lamport_value(self):
         rpc_json = self.solana_network_interface.get_account_balance(self.account_pubkey)
