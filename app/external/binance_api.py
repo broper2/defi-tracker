@@ -2,6 +2,7 @@ import requests
 
 from app.config.constants import BINANCE_SOL_PRICE_URL, BINANCE_API_KEYS
 from app.exceptions.binance_external import BinanceApiException
+from app.utils.error_handling import handle_exceptions
 
 from app.utils.timed_cache import timed_cache
 
@@ -21,10 +22,11 @@ class BinanceApiInterface(object):
 
     @timed_cache(seconds=5)
     def _get_sol_price(self):
-        try:
-            resp = requests.get(BINANCE_SOL_PRICE_URL)
-        except requests.exceptions.RequestException:
-            raise BinanceApiException('Error when requesting SOLUSD price from Binance')
+        return self._request_sol_price()
+
+    @handle_exceptions(BinanceApiException, requests.exceptions.RequestException, KeyError)
+    def _request_sol_price(self):
+        resp = requests.get(BINANCE_SOL_PRICE_URL)
         if resp.status_code != 200:
             raise BinanceApiException(f'Error from Binance api - received status_code {resp.status_code}')
         return resp.json()[BINANCE_API_KEYS['price']]
