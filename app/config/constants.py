@@ -12,7 +12,10 @@ SOLANA_RPC_KEYS = {
     'result': 'result',
     'current': 'current',
     'error': 'error',
+    'epoch': 'epoch'
 }
+
+SOLANA_VALIDATOR_HISTORY_LENGTH = 5
 
 BINANCE_API_KEYS = {
     'price': 'price'

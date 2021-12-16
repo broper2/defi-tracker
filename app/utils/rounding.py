@@ -9,5 +9,8 @@ def round_usd(usd):
 def round_sol(sol):
     return _round(sol, 5)
 
+def round_validator_performance(performance):
+    return _round(performance, 6)
+
 def _round(rate, decimals):
     return round(rate, decimals)

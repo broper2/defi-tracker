@@ -12,12 +12,12 @@ class ValidatorTests(TestCase):
         cls.user1 = User.objects.create(username='user1', password='pswd1')
         cls.user3 = User.objects.create(username='user3', password='pswd3')
         cls.validator1 = SolanaValidator.objects.create(validator_vote_pubkey='pubkey1', display_name='name1', user_id='user1')
-        cls.validator1 = SolanaValidator.objects.create(validator_vote_pubkey='pubkey2', display_name='name2', user_id='user2')
+        cls.validator2 = SolanaValidator.objects.create(validator_vote_pubkey='pubkey2', display_name='name2', user_id='user2')
 
     def test_get_user_with_validators(self):
         self.client.force_login(self.user1)
         response = self.client.get('/validators')
-        self.assertEqual([1.01041, 1.01081, 1.01064, 1.01008, 1.00141], response.context['data']['datasets'][0]['data'])
+        self.assertEqual([0.0, 0.0, 2.076923, 2.7, 1.421053], response.context['data']['datasets'][0]['data'])
         self.assertEqual('name1', response.context['data']['datasets'][0]['label'])
         self.assertEqual([254, 255, 256, 257, 258], response.context['data']['labels'])
         self.assertIn('form', response.context)
@@ -31,9 +31,9 @@ class ValidatorTests(TestCase):
     def test_post_user_valid_validator(self):
         self.client.force_login(self.user1)
         response = self.client.post('/validators', {'validator_vote_pubkey': 'pubkey3', 'display_name':'name3', 'user_id':'user1'})
-        self.assertEqual([1.01041, 1.01081, 1.01064, 1.01008, 1.00141], response.context['data']['datasets'][0]['data'])
+        self.assertEqual([0.0, 0.0, 2.076923, 2.7, 1.421053], response.context['data']['datasets'][0]['data'])
         self.assertEqual('name1', response.context['data']['datasets'][0]['label'])
-        self.assertEquals([1.01755, 1.018, 1.01764, 1.01654, 1.00232], response.context['data']['datasets'][1]['data'])
+        self.assertEquals([3.0, 0.857143, 0.461538, -0.3, 1.263158], response.context['data']['datasets'][1]['data'])
         self.assertEquals('name3', response.context['data']['datasets'][1]['label'])
         self.assertEqual([254, 255, 256, 257, 258], response.context['data']['labels'])
         self.assertIn('form', response.context)
@@ -42,7 +42,7 @@ class ValidatorTests(TestCase):
     def test_post_user_invalid_validator(self):
         self.client.force_login(self.user1)
         response = self.client.post('/validators', {'validator_vote_pubkey': 'invalid_pubkey', 'display_name':'name4', 'user_id':'user1'})
-        self.assertEqual([1.01041, 1.01081, 1.01064, 1.01008, 1.00141], response.context['data']['datasets'][0]['data'])
+        self.assertEqual([0.0, 0.0, 2.076923, 2.7, 1.421053], response.context['data']['datasets'][0]['data'])
         self.assertEqual('name1', response.context['data']['datasets'][0]['label'])
         self.assertEqual([254, 255, 256, 257, 258], response.context['data']['labels'])
         self.assertIn('form', response.context)

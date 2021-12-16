@@ -4,8 +4,12 @@ from django.contrib.auth.models import User
 from app.models import SolanaWallet
 
 
+def mock_is_active_pubkey(interface, pubkey):
+    return pubkey != 'invalid_pubkey'
+
+
 @patch('app.external.binance_api.BinanceApiInterface._get_sol_to_usd_rate', new=lambda *args, **kwargs: float(2))
-@patch('app.external.solana_network.SolanaNetworkInterface._get_account_balance', new=lambda *args, **kwargs: {'result': {'value': 2000000000}})
+@patch('app.external.solana_network.SolanaNetworkInterface._get_account_balance', new=lambda *args, **kwargs: {'value': 2000000000})
 @patch('app.external.solana_network.SolanaNetworkInterface._is_connected', new=lambda *args, **kwargs: True)
 class WalletTests(TestCase):
 
@@ -16,6 +20,7 @@ class WalletTests(TestCase):
         cls.wallet1 = SolanaWallet.objects.create(wallet_pubkey='pubkey1', display_name='name1', user_id='user1')
         cls.wallet2 = SolanaWallet.objects.create(wallet_pubkey='pubkey2', display_name='name2', user_id='user2')
 
+    @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
     def test_get_user_with_wallets(self):
         self.client.force_login(self.user1)
         response = self.client.get('/wallets')
@@ -26,13 +31,14 @@ class WalletTests(TestCase):
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
 
+    @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
     def test_get_user_without_wallets(self):
         self.client.force_login(self.user3)
         response = self.client.get('/wallets')
         self.assertEquals({}, response.context['data'])
         self.assertIn('form', response.context)
 
-    @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=lambda *args, **kwargs: True)
+    @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
     def test_post_valid_wallet_pubkey(self):
         self.client.force_login(self.user1)
         response = self.client.post('/wallets', {'wallet_pubkey': 'pubkey3', 'display_name': 'name3', 'user_id': 'user1'})
@@ -45,7 +51,7 @@ class WalletTests(TestCase):
         self.assertIn('form', response.context)
         self.assertFalse(response.context['form'].errors)
 
-    @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=lambda *args, **kwargs: False)
+    @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
     def test_post_invalid_wallet_pubkey(self):
         self.client.force_login(self.user1)
         response = self.client.post('/wallets', {'wallet_pubkey': 'invalid_pubkey', 'display_name': 'name4', 'user_id': 'user1'})

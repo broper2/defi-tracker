@@ -4,7 +4,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render
 
-from app.external.solana_network import SolanaNetworkInterface, SolanaQueryData
+from app.adapters.validator.builder import get_validator_adapter
+from app.adapters.account.builder import get_account_adapter
+from app.basetypes import SolanaAccountData, SolanaValidatorData
+from app.external.solana_network import SolanaNetworkInterface
 from app.forms import SolanaValidatorForm, SolanaWalletForm
 from app.models import SolanaValidator, SolanaWallet
 from app.utils.ui_data import get_validator_chart_data, get_wallet_table_data
@@ -12,8 +15,8 @@ from app.utils.ui_data import get_validator_chart_data, get_wallet_table_data
 logger = logging.getLogger(__name__)
 
 
-solana_network_interface = SolanaNetworkInterface()
-
+solana_network_interface = SolanaNetworkInterface.instance()
+NETWORK = 'SOLANA'  # If extended to other blockchain networks, this could be param in request - hardcoding for now
 
 def index(request):
     return render(request, 'index.html')
@@ -38,15 +41,15 @@ def validators(request):
     current_user_id = request.user.username
     form = None
     if request.method == 'POST':
-        form = SolanaValidatorForm(current_user_id, solana_network_interface.vote_account_keys, request.POST)
+        form = SolanaValidatorForm(current_user_id, request.POST)
         if form.is_valid():
             form.save()
-    validator_records = get_validator_records(current_user_id)
-    validator_query_data = [SolanaQueryData(record.validator_vote_pubkey, record.display_name) for record in validator_records]
-    validator_adapters = solana_network_interface.get_wrapped_validator_data(validator_query_data)
-    chart_data = get_validator_chart_data(validator_adapters)
+    tracked_validator_models = get_validator_records(current_user_id)
+    tracked_validators = [SolanaValidatorData(model.validator_vote_pubkey, model.display_name) for model in tracked_validator_models]
+    validator_adapter = get_validator_adapter(NETWORK, tracked_validators)
+    chart_data = get_validator_chart_data(validator_adapter)
     if not form:
-        form = SolanaValidatorForm(current_user_id, solana_network_interface.vote_account_keys)
+        form = SolanaValidatorForm(current_user_id)
     return render(request, 'validators.html', {'data': chart_data, 'form': form})
 
 
@@ -61,10 +64,10 @@ def wallets(request):
         form = SolanaWalletForm(current_user_id, request.POST)
         if form.is_valid():
             form.save()
-    wallet_records = get_wallet_records(current_user_id)
-    wallet_query_data = [SolanaQueryData(record.wallet_pubkey, record.display_name) for record in wallet_records]
-    wallet_adapters = [solana_network_interface.get_wrapped_account_data(query_data) for query_data in wallet_query_data]
-    data = get_wallet_table_data(wallet_adapters)
+    account_models = get_wallet_records(current_user_id)
+    accounts = [SolanaAccountData(model.wallet_pubkey, model.display_name) for model in account_models]
+    account_adapters = [get_account_adapter(NETWORK, account) for account in accounts]
+    data = get_wallet_table_data(account_adapters)
     if not form:
         form = SolanaWalletForm(current_user_id)
     return render(request, 'wallets.html', {'data': data, 'form': form})

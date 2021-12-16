@@ -11,10 +11,11 @@ class SolanaValidatorForm(forms.ModelForm):
     display_name = forms.CharField(max_length=50)
     user_id = forms.CharField(max_length=50, widget=forms.HiddenInput())
 
-    def __init__(self, user, valid_pubkeys, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super(SolanaValidatorForm, self).__init__(*args, **kwargs)
         self.initial['user_id'] = user
-        self.valid_pubkeys = valid_pubkeys
+        self.solana_network_interface = SolanaNetworkInterface.instance()
+        self.valid_pubkeys = self.solana_network_interface.vote_account_keys
 
     def clean(self):
         super().clean()
@@ -35,7 +36,7 @@ class SolanaWalletForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(SolanaWalletForm, self).__init__(*args, **kwargs)
         self.initial['user_id'] = user
-        self.solana_network_interface = SolanaNetworkInterface(initial_validator_data_cache=False)
+        self.solana_network_interface = SolanaNetworkInterface.instance()
 
     def clean(self):
         super().clean()

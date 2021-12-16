@@ -1,21 +1,22 @@
-import collections
 from requests.exceptions import RequestException
 
-from app.adapters.account.builder import get_account_adapter
-from app.adapters.validator.builder import get_validator_adapter
 from app.config.constants import SOLANA_PRODUCTION_API_URL, SOLANA_RPC_KEYS
 from app.exceptions.solana_external import SolanaExternalNetworkException
 from app.utils.timed_cache import timed_cache
 from solana.rpc.api import Client
 
 
-SolanaQueryData = collections.namedtuple('SolanaQueryData', ['key', 'display_name'])
-
-
 class SolanaNetworkInterface(object):
 
+    _instance = None
+
+    @classmethod
+    def instance(cls):
+        if not cls._instance:
+            cls._instance = cls()
+        return cls._instance
+
     def __init__(self, initial_validator_data_cache=True):
-        self.network_name = 'Solana'
         self.solana_rpc_client = Client(SOLANA_PRODUCTION_API_URL)
         if initial_validator_data_cache:
             self._request_validator_data()
@@ -25,18 +26,20 @@ class SolanaNetworkInterface(object):
         solana_validator_data = self._request_validator_data()
         return [account[SOLANA_RPC_KEYS['vote_pubkey']] for account in solana_validator_data]
 
-    def get_wrapped_validator_data(self, validator_query_data):
-        solana_validator_data = self._request_validator_data()
-        zipped_data = self._zip_query_and_validator_data(validator_query_data, solana_validator_data)
-        adapter_data = [(query_data.display_name, validator_data) for query_data, validator_data in zipped_data]
-        return [get_validator_adapter(self.network_name, *data) for data in adapter_data]
+    def get_validator_data(self):
+        return self._request_validator_data()
 
-    def get_wrapped_account_data(self, query_data):
-        account_balance = self._get_account_balance(query_data.key)
-        return get_account_adapter(self.network_name, query_data.display_name, **account_balance['result'])
+    def get_account_balance(self, pubkey):
+        if not self.is_valid_account_pubkey(pubkey):
+            raise SolanaExternalNetworkException('Invalid public account key')
+        return self._get_account_balance(pubkey)
 
     def is_valid_account_pubkey(self, pubkey):
         return self._is_connected() and self._is_active_pubkey(pubkey)
+
+    @property
+    def last_epoch(self):
+        return self._get_last_epoch()
 
     def _request_validator_data(self):
         try:
@@ -48,21 +51,13 @@ class SolanaNetworkInterface(object):
     def _fetch_and_cache_validator_data(self):
         return self.solana_rpc_client.get_vote_accounts()[SOLANA_RPC_KEYS['result']][SOLANA_RPC_KEYS['current']]
 
-    @staticmethod
-    def _zip_query_and_validator_data(validator_query_data, solana_validator_data):
-        zipped_data = []
-        validator_query_pubkeys = [query_data.key for query_data in validator_query_data]
-        for validator_data in solana_validator_data:
-            vote_pubkey = validator_data[SOLANA_RPC_KEYS['vote_pubkey']]
-            if vote_pubkey in validator_query_pubkeys:
-                zipped_data.append((validator_query_data[validator_query_pubkeys.index(vote_pubkey)], validator_data))
-        return zipped_data
-
     def _get_account_balance(self, pubkey):
         try:
-            return self.solana_rpc_client.get_balance(pubkey)
+            return self.solana_rpc_client.get_balance(pubkey)[SOLANA_RPC_KEYS['result']]
         except RequestException:
-            raise SolanaExternalNetworkException('Error in fetching account balance from Solana network')
+            raise SolanaExternalNetworkException(f'Error in fetching account balance from Solana network - {pubkey}')
+        except KeyError:
+            raise SolanaExternalNetworkException(f'Error received from Solana network fetching account balance - {pubkey}')
 
     def _is_connected(self):
         try:
@@ -79,3 +74,12 @@ class SolanaNetworkInterface(object):
             return self.solana_rpc_client.get_account_info(pubkey)
         except RequestException:
             raise SolanaExternalNetworkException('Error in fetching account information from Solana network')
+
+    @timed_cache(hours=1)
+    def _get_last_epoch(self):
+        try:
+            return self.solana_rpc_client.get_epoch_info()[SOLANA_RPC_KEYS['result']][SOLANA_RPC_KEYS['epoch']]
+        except RequestException:
+            raise SolanaExternalNetworkException('RPC exception from Solana network fetching last epoch')
+        except KeyError:
+            raise SolanaExternalNetworkException('Error received from Solana network fetching last epoch')
