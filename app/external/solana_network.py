@@ -30,8 +30,6 @@ class SolanaNetworkInterface(object):
         return self._request_validator_data()
 
     def get_account_balance(self, pubkey):
-        if not self.is_valid_account_pubkey(pubkey):
-            raise SolanaExternalNetworkException('Invalid public account key')
         return self._get_account_balance(pubkey)
 
     def is_valid_account_pubkey(self, pubkey):

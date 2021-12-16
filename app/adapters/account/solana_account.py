@@ -10,10 +10,11 @@ class SolanaAccountDataAdapter(object):
         self.display_name = tracked_account.display_name
         self.binance_api = BinanceApiInterface.instance()
         self.solana_network_interface = SolanaNetworkInterface.instance()
+        self.lamport_value = self._get_lamport_value()
 
     @property
     def sol_value(self):
-        return self._get_lamport_value() * LAMPORT_TO_SOL_RATE
+        return self.lamport_value * LAMPORT_TO_SOL_RATE
 
     @property
     def usd_value(self):
