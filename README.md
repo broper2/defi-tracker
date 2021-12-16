@@ -3,7 +3,7 @@ Django application to track Solana investments, all you need is the public keys!
 
 Functionalities:
   - User accounts for custom validators/wallets tracking
-  - Validator(s) performance interactive graph (useful for staking investments)
+  - Validator(s) performance interactive graph (useful for staking investment decisions)
     - To track a validator performance, enter the vote account public key and a personalized display name
     - Validator performance metric is based on Solana economics, directly related to APY %
       - A "network-average" validator with 0% commission will yield performance metric of 1.0
