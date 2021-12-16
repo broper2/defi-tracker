@@ -1,5 +1,5 @@
 from app.utils.colors import get_random_hex_code
-from app.utils.rounding import round_sol, round_usd, round_validator_performance
+from app.utils.rounding import round_crypto, round_usd, round_validator_performance
 
 
 def get_validator_chart_data(validator_adapter):
@@ -8,7 +8,7 @@ def get_validator_chart_data(validator_adapter):
     datasets = []
     labels = []
     for display_name, epoch_performances in zip(
-            validator_adapter.get_display_names(), validator_adapter.get_validator_performances()
+            validator_adapter.get_display_names(), validator_adapter.get_chart_data()
     ):
         color_code = get_random_hex_code()
         datasets.append({
@@ -19,7 +19,7 @@ def get_validator_chart_data(validator_adapter):
             'backgroundColor': color_code,
 
         })
-        labels = validator_adapter.get_epochs()
+        labels = validator_adapter.get_x_axis_labels()
     return {
         'labels': labels,
         'datasets': datasets
@@ -29,10 +29,10 @@ def get_validator_chart_data(validator_adapter):
 def get_wallet_table_data(wallet_adapters):
     if not wallet_adapters:
         return {}
-    account_data = [(adapter.display_name, adapter.sol_value, adapter.usd_value) for adapter in wallet_adapters]
+    account_data = [(adapter.display_name, adapter.crypto_currency_value, adapter.usd_value) for adapter in wallet_adapters]
     table_data = []
-    for name, sol, usd in account_data:
-        table_data.append(_build_table_row(name, sol, usd))
+    for name, crypto, usd in account_data:
+        table_data.append(_build_table_row(name, crypto, usd))
     table_data.append(_get_wallet_total_row_data(account_data))
     return table_data
 
@@ -44,9 +44,9 @@ def _get_wallet_total_row_data(table_data):
         sum([account[2] for account in table_data]),
     )
 
-def _build_table_row(name, sol, usd):
+def _build_table_row(name, crypto, usd):
     return {
         'display_name': name,
-        'sol': round_sol(sol),
+        'sol': round_crypto(crypto),
         'usd': round_usd(usd),
     }

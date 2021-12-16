@@ -6,8 +6,8 @@ def round_credit_rate(rate):
 def round_usd(usd):
     return _round(usd, 2)
 
-def round_sol(sol):
-    return _round(sol, 5)
+def round_crypto(crypto):
+    return _round(crypto, 5)
 
 def round_validator_performance(performance):
     return _round(performance, 6)

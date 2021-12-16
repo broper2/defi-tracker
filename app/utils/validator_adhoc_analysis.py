@@ -11,7 +11,7 @@ def get_top_validators(num_validators=5, num_epochs=5):
     interface = SolanaNetworkInterface()
     validators = [SolanaValidatorData(key, None) for key in interface.vote_account_keys]
     adapter = SolanaValidatorDataAdapter(validators)
-    sum_performances = [sum(x[0-num_epochs:len(x)]) for x in adapter.get_validator_performances()]
+    sum_performances = [sum(x[0-num_epochs:len(x)]) for x in adapter.get_chart_data()]
     validators_and_performances = list(zip(validators, sum_performances))
     validators_and_performances.sort(key=lambda x: x[1], reverse=True)
     return [(v.key, perf/num_epochs) for v, perf in validators_and_performances[:num_validators]]

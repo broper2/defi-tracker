@@ -1,9 +1,10 @@
 import numpy as np
 
+from app.adapters.validator.base_validator import ValidatorAdapterBase
 from app.external.solana_network import SolanaNetworkInterface
 
 
-class SolanaValidatorDataAdapter(object):
+class SolanaValidatorDataAdapter(ValidatorAdapterBase):
 
     def __init__(self, tracked_validators):
         self.tracked_validators = tracked_validators
@@ -12,7 +13,7 @@ class SolanaValidatorDataAdapter(object):
         self.total_credits_per_epoch = self._get_total_credits_per_epoch()
         self.num_validators = len(self.cluster_validator_data)
 
-    def get_validator_performances(self):
+    def get_chart_data(self):
         performances = []
         for validator in self.tracked_validators:
             validator_data = self._get_validator_data(validator.key)
@@ -22,7 +23,7 @@ class SolanaValidatorDataAdapter(object):
     def get_display_names(self):
         return [data.display_name for data in self.tracked_validators]
 
-    def get_epochs(self):
+    def get_x_axis_labels(self):
         return [self.solana_network_interface.last_epoch + i for i in
                 range(1 - self.solana_network_interface.epoch_credit_count, 1)]
 
