@@ -8,7 +8,7 @@ class SolanaValidator(models.Model):
     user_id = models.CharField(max_length=50)
 
     def __str__(self):
-        return f'{self.user_id} tracking validator {self.validator_vote_pubkey}'
+        return f'{self.user_id} tracking validator {self.display_name}'
 
 
 class SolanaWallet(models.Model):
@@ -18,4 +18,4 @@ class SolanaWallet(models.Model):
     user_id = models.CharField(max_length=50)
 
     def __str__(self):
-        return f'{self.user_id} tracking wallet {self.wallet_pubkey}'
+        return f'{self.user_id} tracking wallet {self.display_name}'
