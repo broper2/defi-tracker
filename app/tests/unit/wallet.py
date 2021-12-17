@@ -9,7 +9,7 @@ def mock_is_active_pubkey(interface, pubkey):
 
 
 @patch('app.external.binance_api.BinanceApiInterface._get_sol_price', new=lambda *args, **kwargs: 1.545454)
-@patch('app.external.solana_network.SolanaNetworkInterface._get_account_balance', new=lambda *args, **kwargs: {'value': 2000000000})
+@patch('app.external.solana_network.SolanaNetworkInterface._get_account_balance', new=lambda *args, **kwargs: 2000000000)
 @patch('app.external.solana_network.SolanaNetworkInterface._is_connected', new=lambda *args, **kwargs: True)
 class WalletTests(TestCase):
 

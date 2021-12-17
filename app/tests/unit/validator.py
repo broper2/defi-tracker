@@ -5,6 +5,7 @@ from app.models import SolanaValidator
 from .constants import MOCK_VALIDATOR_DATA
 
 @patch('app.external.solana_network.SolanaNetworkInterface._fetch_and_cache_validator_data', new=lambda *args, **kwargs: MOCK_VALIDATOR_DATA)
+@patch('app.external.solana_network.SolanaNetworkInterface._request_last_epoch', new=lambda *args, **kwargs: 258)
 class ValidatorTests(TestCase):
 
     @classmethod

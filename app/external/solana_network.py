@@ -78,7 +78,7 @@ class SolanaNetworkInterface(object):
 
     @handle_exceptions(SolanaExternalNetworkException, RequestException, KeyError)
     def _get_account_balance(self, pubkey):
-        return self.solana_rpc_client.get_balance(pubkey)[SOLANA_RPC_KEYS['result']]
+        return self.solana_rpc_client.get_balance(pubkey)[SOLANA_RPC_KEYS['result']][SOLANA_RPC_KEYS['value']]
 
     @handle_exceptions(SolanaExternalNetworkException, RequestException)
     def _is_connected(self):
