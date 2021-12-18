@@ -5,11 +5,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render
 
 from app.adapters.validator.builder import get_validator_adapter
-from app.adapters.account.builder import get_account_adapter
+from app.adapters.portfolio.builder import get_portfolio_adapter
 from app.basetypes import SolanaAccountData, SolanaValidatorData
 from app.forms import SolanaValidatorForm, SolanaWalletForm
 from app.models import SolanaValidator, SolanaWallet
-from app.utils.ui_data import get_validator_chart_data, get_wallet_table_data
+from app.utils.ui_data import get_validator_chart_data
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +56,7 @@ def get_validator_records(user_id):
     return SolanaValidator.objects.filter(user_id=user_id)
 
 
-def wallets(request):
+def wallets(request): #TODO cleanup usages of wallet/account/portfolio
     current_user_id = request.user.username
     form = None
     if request.method == 'POST':
@@ -65,11 +65,11 @@ def wallets(request):
             form.save()
     account_models = get_wallet_records(current_user_id)
     accounts = [SolanaAccountData(model.wallet_pubkey, model.display_name, model.staked) for model in account_models]
-    account_adapters = [get_account_adapter(NETWORK, account) for account in accounts]
-    data = get_wallet_table_data(account_adapters)
+    portfolio_adapter = get_portfolio_adapter(NETWORK, accounts)
+    table_data = portfolio_adapter.composite_data
     if not form:
         form = SolanaWalletForm(current_user_id)
-    return render(request, 'wallets.html', {'data': data, 'form': form})
+    return render(request, 'wallets.html', {'data': table_data, 'form': form})
 
 
 def get_wallet_records(user_id):

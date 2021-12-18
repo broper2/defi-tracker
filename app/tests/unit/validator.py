@@ -26,7 +26,7 @@ class ValidatorTests(TestCase):
     def test_get_user_with_no_validators(self):
         self.client.force_login(self.user3)
         response = self.client.get('/validators')
-        self.assertEqual({}, response.context['data'])
+        self.assertEqual({'datasets': [], 'labels': []}, response.context['data'])
         self.assertIn('form', response.context)
 
     def test_post_user_valid_validator(self):

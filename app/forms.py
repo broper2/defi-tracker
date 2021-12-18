@@ -42,7 +42,7 @@ class SolanaWalletForm(forms.ModelForm):
     def clean(self):
         super().clean()
         if not self.solana_network_interface.is_valid_account_pubkey(self.cleaned_data['wallet_pubkey']):
-            raise ValidationError('Invalid account pubkey')
+            raise ValidationError('Invalid wallet pubkey')
         return self.cleaned_data
 
     class Meta:

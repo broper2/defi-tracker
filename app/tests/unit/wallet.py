@@ -25,8 +25,8 @@ class WalletTests(TestCase):
         self.client.force_login(self.user1)
         response = self.client.get('/wallets')
         expected_data = [
-            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09, 'staked': 'True'},
-            {'display_name': 'Total', 'sol': 2, 'usd': 3.09, 'staked': 'N/A'},
+            {'display_name': self.wallet1.display_name, 'sol': 2.0, 'usd': 3.09, 'staked': 'True'},
+            {'display_name': 'Portfolio Total', 'sol': 2.0, 'usd': 3.09, 'staked': 'N/A'},
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
@@ -35,7 +35,7 @@ class WalletTests(TestCase):
     def test_get_user_without_wallets(self):
         self.client.force_login(self.user3)
         response = self.client.get('/wallets')
-        self.assertEquals({}, response.context['data'])
+        self.assertEquals([{'display_name': 'Portfolio Total', 'sol': 0, 'usd': 0, 'staked': 'N/A'}], response.context['data'])
         self.assertIn('form', response.context)
 
     @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
@@ -43,9 +43,9 @@ class WalletTests(TestCase):
         self.client.force_login(self.user1)
         response = self.client.post('/wallets', {'wallet_pubkey': 'pubkey3', 'display_name': 'name3', 'user_id': 'user1', 'staked': False})
         expected_data = [
-            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09, 'staked': 'True'},
-            {'display_name': 'name3', 'sol': 2, 'usd': 3.09, 'staked': 'False'},
-            {'display_name': 'Total', 'sol': 4, 'usd': 6.18, 'staked': 'N/A'},
+            {'display_name': self.wallet1.display_name, 'sol': 2.0, 'usd': 3.09, 'staked': 'True'},
+            {'display_name': 'name3', 'sol': 2.0, 'usd': 3.09, 'staked': 'False'},
+            {'display_name': 'Portfolio Total', 'sol': 4, 'usd': 6.18, 'staked': 'N/A'},
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
@@ -56,8 +56,8 @@ class WalletTests(TestCase):
         self.client.force_login(self.user1)
         response = self.client.post('/wallets', {'wallet_pubkey': 'invalid_pubkey', 'display_name': 'name4', 'user_id': 'user1'})
         expected_data = [
-            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09, 'staked': 'True'},
-            {'display_name': 'Total', 'sol': 2, 'usd': 3.09, 'staked': 'N/A'},
+            {'display_name': self.wallet1.display_name, 'sol': 2.0, 'usd': 3.09, 'staked': 'True'},
+            {'display_name': 'Portfolio Total', 'sol': 2.0, 'usd': 3.09, 'staked': 'N/A'},
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
