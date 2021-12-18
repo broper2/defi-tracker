@@ -1,5 +1,3 @@
-SOLANA_PRODUCTION_API_URL = 'https://api.mainnet-beta.solana.com'
-
 SOLANA_RPC_KEYS = {
     'activated_stake' : 'activatedStake',
     'commission' : 'commission',

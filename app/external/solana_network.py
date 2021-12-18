@@ -1,8 +1,10 @@
+import os
+
 from requests.exceptions import HTTPError
 
 from solana.rpc.api import Client
 
-from app.config.constants import SOLANA_PRODUCTION_API_URL, SOLANA_RPC_KEYS, SOLANA_VALIDATOR_HISTORY_LENGTH
+from app.config.constants import SOLANA_RPC_KEYS, SOLANA_VALIDATOR_HISTORY_LENGTH
 from app.exceptions.solana_external import SolanaExternalNetworkException
 from app.utils.error_handling import handle_exceptions
 from app.utils.timed_cache import timed_cache
@@ -19,7 +21,8 @@ class SolanaNetworkInterface(object):
         return cls._instance
 
     def __init__(self, initial_validator_data_cache=True):
-        self.solana_rpc_client = Client(SOLANA_PRODUCTION_API_URL)
+        self.solana_rpc_url = os.environ['SOLANA_RPC_URL']
+        self.solana_rpc_client = Client(self.solana_rpc_url)
         if initial_validator_data_cache:
             self._get_cluster_validator_data()
 
