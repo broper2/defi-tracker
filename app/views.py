@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.portfolio.builder import get_portfolio_adapter
-from app.basetypes import SolanaAccountData, SolanaValidatorData
+from app.basetypes import SolanaWalletData, SolanaValidatorData
 from app.forms import SolanaValidatorForm, SolanaWalletForm
 from app.models import SolanaValidator, SolanaWallet
 from app.utils.ui_data import get_validator_chart_data
@@ -56,16 +56,16 @@ def get_validator_records(user_id):
     return SolanaValidator.objects.filter(user_id=user_id)
 
 
-def wallets(request): #TODO cleanup usages of wallet/account/portfolio
+def wallets(request):
     current_user_id = request.user.username
     form = None
     if request.method == 'POST':
         form = SolanaWalletForm(current_user_id, request.POST)
         if form.is_valid():
             form.save()
-    account_models = get_wallet_records(current_user_id)
-    accounts = [SolanaAccountData(model.wallet_pubkey, model.display_name, model.staked) for model in account_models]
-    portfolio_adapter = get_portfolio_adapter(NETWORK, accounts)
+    wallet_models = get_wallet_records(current_user_id)
+    wallets = [SolanaWalletData(model.wallet_pubkey, model.display_name, model.staked) for model in wallet_models]
+    portfolio_adapter = get_portfolio_adapter(NETWORK, wallets)
     table_data = portfolio_adapter.composite_data
     if not form:
         form = SolanaWalletForm(current_user_id)

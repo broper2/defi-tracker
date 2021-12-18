@@ -6,12 +6,12 @@ from app.external.solana_network import SolanaNetworkInterface
 
 class SolanaPortfolioDataAdapter(PortfolioCompositeBase):
 
-    def __init__(self, tracked_accounts):
+    def __init__(self, tracked_wallets):
         self.binance_api = BinanceApiInterface.instance()
         usd_sol_rate = self.binance_api.get_sol_usd_rate()
         self.child_adapters = []
-        for tracked_account in tracked_accounts:
-            self.child_adapters.append(SolanaWalletDataAdapter(tracked_account, usd_sol_rate))
+        for tracked_wallet in tracked_wallets:
+            self.child_adapters.append(SolanaWalletDataAdapter(tracked_wallet, usd_sol_rate))
 
     @property
     def _children(self):
@@ -36,12 +36,12 @@ class SolanaPortfolioDataAdapter(PortfolioCompositeBase):
 
 class SolanaWalletDataAdapter(PortfolioCompositeBase):
 
-    def __init__(self, account_data, usd_sol_rate):
+    def __init__(self, wallet_data, usd_sol_rate):
         interface = SolanaNetworkInterface.instance()
-        self._lamport_value = interface.get_account_balance(account_data.key)
+        self._lamport_value = interface.get_account_balance(wallet_data.key)
         self.usd_sol_rate = usd_sol_rate
-        self.staked_bool = account_data.is_staked
-        self.name = account_data.display_name
+        self.staked_bool = wallet_data.is_staked
+        self.name = wallet_data.display_name
 
     @property
     def _children(self):
