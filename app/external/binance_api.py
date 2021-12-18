@@ -24,9 +24,8 @@ class BinanceApiInterface(object):
     def _get_sol_price(self):
         return self._request_sol_price()
 
-    @handle_exceptions(BinanceApiException, requests.exceptions.RequestException, KeyError)
+    @handle_exceptions(BinanceApiException, requests.exceptions.HTTPError, KeyError)
     def _request_sol_price(self):
         resp = requests.get(BINANCE_SOL_PRICE_URL)
-        if resp.status_code != 200:
-            raise BinanceApiException(f'Error from Binance api - received status_code {resp.status_code}')
+        resp.raise_for_status()
         return resp.json()[BINANCE_API_KEYS['price']]

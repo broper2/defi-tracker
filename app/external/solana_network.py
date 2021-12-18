@@ -1,4 +1,4 @@
-from requests.exceptions import RequestException
+from requests.exceptions import HTTPError
 
 from solana.rpc.api import Client
 
@@ -54,7 +54,7 @@ class SolanaNetworkInterface(object):
     def epoch_credit_count(self):
         return SOLANA_VALIDATOR_HISTORY_LENGTH
 
-    @handle_exceptions(SolanaExternalNetworkException, RequestException)
+    @handle_exceptions(SolanaExternalNetworkException, HTTPError)
     def _get_cluster_validator_data(self):
         cluster_validator_data = self._get_current_validator_data()
         for validator_data in cluster_validator_data:
@@ -72,15 +72,15 @@ class SolanaNetworkInterface(object):
     def _fetch_and_cache_validator_data(self):
         return self._fetch_validator_data()
 
-    @handle_exceptions(SolanaExternalNetworkException, RequestException)
+    @handle_exceptions(SolanaExternalNetworkException, HTTPError)
     def _fetch_validator_data(self):
         return self.solana_rpc_client.get_vote_accounts()
 
-    @handle_exceptions(SolanaExternalNetworkException, RequestException, KeyError)
+    @handle_exceptions(SolanaExternalNetworkException, HTTPError, KeyError)
     def _get_account_balance(self, pubkey):
         return self.solana_rpc_client.get_balance(pubkey)[SOLANA_RPC_KEYS['result']][SOLANA_RPC_KEYS['value']]
 
-    @handle_exceptions(SolanaExternalNetworkException, RequestException)
+    @handle_exceptions(SolanaExternalNetworkException, HTTPError)
     def _is_connected(self):
         return self.solana_rpc_client.is_connected()
 
@@ -88,7 +88,7 @@ class SolanaNetworkInterface(object):
         account_info = self._get_account_info(pubkey)
         return account_info and SOLANA_RPC_KEYS['error'] not in account_info
 
-    @handle_exceptions(SolanaExternalNetworkException, RequestException)
+    @handle_exceptions(SolanaExternalNetworkException, HTTPError)
     def _get_account_info(self, pubkey):
         return self.solana_rpc_client.get_account_info(pubkey)
 
@@ -96,7 +96,7 @@ class SolanaNetworkInterface(object):
     def _get_last_epoch(self):
         return self._request_last_epoch()
 
-    @handle_exceptions(SolanaExternalNetworkException, RequestException, KeyError)
+    @handle_exceptions(SolanaExternalNetworkException, HTTPError, KeyError)
     def _request_last_epoch(self):
         return self.solana_rpc_client.get_epoch_info()[SOLANA_RPC_KEYS['result']][SOLANA_RPC_KEYS['epoch']]
 
