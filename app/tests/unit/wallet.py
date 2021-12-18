@@ -17,16 +17,16 @@ class WalletTests(TestCase):
     def setUpTestData(cls):
         cls.user1 = User.objects.create(username='user1', password='pswd1')
         cls.user3 = User.objects.create(username='user3', password='pswd3')
-        cls.wallet1 = SolanaWallet.objects.create(wallet_pubkey='pubkey1', display_name='name1', user_id='user1')
-        cls.wallet2 = SolanaWallet.objects.create(wallet_pubkey='pubkey2', display_name='name2', user_id='user2')
+        cls.wallet1 = SolanaWallet.objects.create(wallet_pubkey='pubkey1', display_name='name1', user_id='user1', staked=True)
+        cls.wallet2 = SolanaWallet.objects.create(wallet_pubkey='pubkey2', display_name='name2', user_id='user2', staked=False)
 
     @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
     def test_get_user_with_wallets(self):
         self.client.force_login(self.user1)
         response = self.client.get('/wallets')
         expected_data = [
-            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09},
-            {'display_name': 'Total', 'sol': 2, 'usd': 3.09},
+            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09, 'staked': 'True'},
+            {'display_name': 'Total', 'sol': 2, 'usd': 3.09, 'staked': 'N/A'},
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
@@ -41,11 +41,11 @@ class WalletTests(TestCase):
     @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
     def test_post_valid_wallet_pubkey(self):
         self.client.force_login(self.user1)
-        response = self.client.post('/wallets', {'wallet_pubkey': 'pubkey3', 'display_name': 'name3', 'user_id': 'user1'})
+        response = self.client.post('/wallets', {'wallet_pubkey': 'pubkey3', 'display_name': 'name3', 'user_id': 'user1', 'staked': False})
         expected_data = [
-            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09},
-            {'display_name': 'name3', 'sol': 2, 'usd': 3.09},
-            {'display_name': 'Total', 'sol': 4, 'usd': 6.18},
+            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09, 'staked': 'True'},
+            {'display_name': 'name3', 'sol': 2, 'usd': 3.09, 'staked': 'False'},
+            {'display_name': 'Total', 'sol': 4, 'usd': 6.18, 'staked': 'N/A'},
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
@@ -56,8 +56,8 @@ class WalletTests(TestCase):
         self.client.force_login(self.user1)
         response = self.client.post('/wallets', {'wallet_pubkey': 'invalid_pubkey', 'display_name': 'name4', 'user_id': 'user1'})
         expected_data = [
-            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09},
-            {'display_name': 'Total', 'sol': 2, 'usd': 3.09},
+            {'display_name': self.wallet1.display_name, 'sol': 2, 'usd': 3.09, 'staked': 'True'},
+            {'display_name': 'Total', 'sol': 2, 'usd': 3.09, 'staked': 'N/A'},
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)

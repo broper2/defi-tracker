@@ -29,12 +29,14 @@
                         <th scope="col">Wallet Display Name</th>
                         <th scope="col">Wallet Sol tokens</th>
                         <th scope="col">Wallet USD value</th>
+                        <th scope="col">Staked Account</th>
                     </tr>
                     {% for wallet in data %}
                         <tr>
                             <td>{{wallet.display_name}}</td>
                             <td>{{wallet.sol}}</td>
                             <td>${{wallet.usd}}</td>
+                            <td>{{wallet.staked}}</td>
                         </tr>
                     {% endfor %}
                 </table>

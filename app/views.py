@@ -64,7 +64,7 @@ def wallets(request):
         if form.is_valid():
             form.save()
     account_models = get_wallet_records(current_user_id)
-    accounts = [SolanaAccountData(model.wallet_pubkey, model.display_name) for model in account_models]
+    accounts = [SolanaAccountData(model.wallet_pubkey, model.display_name, model.staked) for model in account_models]
     account_adapters = [get_account_adapter(NETWORK, account) for account in accounts]
     data = get_wallet_table_data(account_adapters)
     if not form:

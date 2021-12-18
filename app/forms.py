@@ -32,6 +32,7 @@ class SolanaWalletForm(forms.ModelForm):
     wallet_pubkey = forms.CharField(max_length=100)
     display_name = forms.CharField(max_length=50)
     user_id = forms.CharField(max_length=50, widget=forms.HiddenInput())
+    staked = forms.BooleanField(required=False)
 
     def __init__(self, user, *args, **kwargs):
         super(SolanaWalletForm, self).__init__(*args, **kwargs)
@@ -46,4 +47,4 @@ class SolanaWalletForm(forms.ModelForm):
 
     class Meta:
         model = SolanaWallet
-        fields = ['wallet_pubkey', 'display_name', 'user_id']
+        fields = ['wallet_pubkey', 'display_name', 'staked', 'user_id']
