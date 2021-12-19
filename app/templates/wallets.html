@@ -7,7 +7,7 @@
     <div class="d-flex flex-column">
         <div class="pl-5">
             <h2>Track new wallet:</h2>
-            <form method="post" action="/wallets">
+            <form method="post" action="/wallets" class="data-form">
                 {% csrf_token %}
                 {{ form.as_p }}
                 {% if form.errors %}

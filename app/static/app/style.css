@@ -1,0 +1,20 @@
+input, textarea {
+    float: right;
+    background-color: #f6f7fa;
+}
+
+label {
+    padding-right: 5px;
+}
+
+body {
+    background-color: #f2f3f8;
+}
+
+table {
+    background-color: #f2fcf1;
+}
+
+.data-form {
+    margin-right: 30px;
+}

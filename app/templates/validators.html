@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 {% extends "base_generic.html" %}
 
-{% block content %} <div class="row">
-        <div class="d-flex flex-column">
+{% block content %}
+
+<div class="row">
+    <div class="d-flex flex-column">
         <div class="pl-5">
             <h2>Track new validator:</h2>
-            <form method="post" action="/validators">
+            <form method="post" action="/validators" class="data-form">
                 {% csrf_token %}
                 {{ form.as_p }}
                 {% if form.errors %}
@@ -19,7 +21,8 @@
             </form>
         </div>
     </div>
-        <div class="d-flex flex-column">
+    <div class="d-flex flex-column">
+        <div class="pl-5">
             {% if data %}
                 <canvas id="myChart" height="400" width="400"></canvas>
                 <script>
@@ -76,6 +79,7 @@
                 </script>
             {% endif %}
         </div>
+    </div>
     </div>
 
 
