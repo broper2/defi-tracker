@@ -14,12 +14,6 @@ from app.utils.ui_data import get_validator_chart_data
 logger = logging.getLogger(__name__)
 
 
-NETWORK = 'SOLANA'  # If extended to other blockchain networks, this could be param in request - hardcoding for now
-
-def index(request):
-    return render(request, 'index.html')
-
-
 def create_user(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -35,7 +29,12 @@ def create_user(request):
     return render(request, 'registration/create_user.html', {'form': form})
 
 
-def validators(request):
+def index(request, network=None):
+    print(network)
+    return render(request, 'index.html')
+
+
+def validators(request, network=None):
     current_user_id = request.user.username
     form = None
     if request.method == 'POST':
@@ -45,7 +44,7 @@ def validators(request):
     tracked_validator_models = get_validator_records(current_user_id)
     tracked_validators = [SolanaValidatorData(model.validator_vote_pubkey, model.display_name) for model in
                           tracked_validator_models]
-    validator_adapter = get_validator_adapter(NETWORK, tracked_validators)
+    validator_adapter = get_validator_adapter(network, tracked_validators)
     chart_data = get_validator_chart_data(validator_adapter)
     if not form:
         form = SolanaValidatorForm(current_user_id)
@@ -56,7 +55,7 @@ def get_validator_records(user_id):
     return SolanaValidator.objects.filter(user_id=user_id)
 
 
-def wallets(request):
+def wallets(request, network=None):
     current_user_id = request.user.username
     form = None
     if request.method == 'POST':
@@ -65,7 +64,7 @@ def wallets(request):
             form.save()
     wallet_models = get_wallet_records(current_user_id)
     wallets = [SolanaWalletData(model.wallet_pubkey, model.display_name, model.staked) for model in wallet_models]
-    portfolio_adapter = get_portfolio_adapter(NETWORK, wallets)
+    portfolio_adapter = get_portfolio_adapter(network, wallets)
     table_data = portfolio_adapter.composite_data
     if not form:
         form = SolanaWalletForm(current_user_id)
