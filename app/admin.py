@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import SolanaValidator, SolanaWallet
+from .models import DefiWallet, DefiValidator
 
-admin.site.register(SolanaValidator)
-admin.site.register(SolanaWallet)
+admin.site.register(DefiValidator)
+admin.site.register(DefiWallet)
