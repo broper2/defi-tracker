@@ -7,7 +7,7 @@ from django.shortcuts import render
 from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.portfolio.builder import get_portfolio_adapter
 from app.basetypes import SolanaWalletData, SolanaValidatorData
-from app.config.constants import DEFAULT_DEFI_NETWORK
+from app.config.constants import DEFAULT_DEFI_NETWORK, PROOF_OF_STAKE_DEFI
 from app.forms import SolanaValidatorForm, SolanaWalletForm
 from app.models import SolanaValidator, SolanaWallet
 from app.utils.ui_data import get_validator_chart_data
@@ -35,6 +35,8 @@ def defi_index(request, network=None):
 
 
 def validators(request, network=None):
+    if network not in PROOF_OF_STAKE_DEFI:
+        return render(request, 'validators.html', {'network': network})
     current_user_id = request.user.username
     form = None
     if request.method == 'POST':

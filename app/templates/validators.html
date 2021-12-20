@@ -2,85 +2,86 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-
-<div class="row">
-    <div class="d-flex flex-column">
-        <div class="pl-5">
-            <h2>Track new validator:</h2>
-            <form method="post" action="/validators" class="data-form">
-                {% csrf_token %}
-                {{ form.as_p }}
-                {% if form.errors %}
-                {% for field in form %}
-                {% for error in field.errors %}
-                <p> {{ error }} </p>
-                {% endfor %}
-                {% endfor %}
-                {% endif %}
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
-    <div class="d-flex flex-column">
-        <div class="pl-5">
-            {% if data %}
-                <canvas id="myChart" height="400" width="400"></canvas>
-                <script>
-                    const data = {{ data|safe }};
-                    const ctx = document.getElementById('myChart').getContext('2d');
-                    const myChart = new Chart(ctx, {
-                        type: 'line',
-                        data: data,
-                        options: {
-                            responsive: true,
-                                interaction: {
-                                mode: 'index',
-                                    intersect: false,
-                            },
-                            stacked: false,
-                            title: {
-                                display: true,
-                                text: '{{ network | capfirst }} Validator Tracker',},
-                            legend: {
-                                display: true,
-                                position: 'bottom'
-                            },
-                            scales: {
-                                yAxes: [{
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Validator Performance'
-                                    }
-                                }],
-                                xAxes: [{
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: '{{ network | capfirst }} Epoch'
-                                    }
-                                }],
-                                y: {
-                                    type: 'linear',
-                                        display: true,
-                                        position: 'left',
-                                },
-                                y1: {
-                                    type: 'linear',
-                                        display: true,
-                                        position: 'right',
-
-                                        // grid line settings
-                                        grid: {
-                                        drawOnChartArea: false, // only want the grid lines for one axis to show up
+    {% if network == 'Solana' %}
+        <div class="row">
+            <div class="d-flex flex-column">
+                <div class="pl-5">
+                    <h2>Track new validator:</h2>
+                    <form method="post" action="/validators" class="data-form">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {% if form.errors %}
+                        {% for field in form %}
+                        {% for error in field.errors %}
+                        <p> {{ error }} </p>
+                        {% endfor %}
+                        {% endfor %}
+                        {% endif %}
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="d-flex flex-column">
+                <div class="pl-5">
+                    {% if data %}
+                        <canvas id="myChart" height="400" width="400"></canvas>
+                        <script>
+                            const data = {{ data|safe }};
+                            const ctx = document.getElementById('myChart').getContext('2d');
+                            const myChart = new Chart(ctx, {
+                                type: 'line',
+                                data: data,
+                                options: {
+                                    responsive: true,
+                                        interaction: {
+                                        mode: 'index',
+                                            intersect: false,
                                     },
-                                },
-                            }
-                    },
-                });
-                </script>
-            {% endif %}
+                                    stacked: false,
+                                    title: {
+                                        display: true,
+                                        text: '{{ network | capfirst }} Validator Tracker',},
+                                    legend: {
+                                        display: true,
+                                        position: 'bottom'
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'Validator Performance'
+                                            }
+                                        }],
+                                        xAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: '{{ network | capfirst }} Epoch'
+                                            }
+                                        }],
+                                        y: {
+                                            type: 'linear',
+                                                display: true,
+                                                position: 'left',
+                                        },
+                                        y1: {
+                                            type: 'linear',
+                                                display: true,
+                                                position: 'right',
+
+                                                // grid line settings
+                                                grid: {
+                                                drawOnChartArea: false, // only want the grid lines for one axis to show up
+                                            },
+                                        },
+                                    }
+                            },
+                        });
+                        </script>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
-
-
+    {% else %}
+        <span>Proof of Stake not supported by {{ network | capfirst }} (yet)</span>
+    {% endif %}
 {% endblock %}
