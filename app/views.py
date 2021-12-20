@@ -7,6 +7,7 @@ from django.shortcuts import render
 from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.portfolio.builder import get_portfolio_adapter
 from app.basetypes import SolanaWalletData, SolanaValidatorData
+from app.config.constants import DEFI_STR
 from app.forms import SolanaValidatorForm, SolanaWalletForm
 from app.models import SolanaValidator, SolanaWallet
 from app.utils.ui_data import get_validator_chart_data
@@ -23,15 +24,15 @@ def create_user(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return render(request, 'index.html')
+            return render(request, 'defi_index.html', {'network': DEFI_STR})
     else:
         form = UserCreationForm()
     return render(request, 'registration/create_user.html', {'form': form})
 
 
-def index(request, network=None):
-    print(network)
-    return render(request, 'index.html')
+def defi_index(request, network=None):
+    network = DEFI_STR if network in (None, '', '/') else network.title()
+    return render(request, 'defi_index.html', {'network': network})
 
 
 def validators(request, network=None):

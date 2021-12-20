@@ -6,5 +6,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('create_user', create_user, name='create_user'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('<str:network>', include('app.urls')),
+    path('<str:network>/', include('app.urls')),
+    path('', include('app.urls')),
 ]
