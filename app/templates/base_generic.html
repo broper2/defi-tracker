@@ -4,7 +4,7 @@
 
 <html>
     <head>
-        <title>Sol Tracker</title>
+        <title>DeFi Tracker</title>
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'app/style.css' %}">
 
@@ -16,18 +16,16 @@
     <body>
 
     <nav class="navbar navbar-expand navbar-dark bg-dark navbar-background">
-        <a class="navbar-brand" href="/solana">Sol Tracker!</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <a class="navbar-brand" href="/solana">Solana</a>
+        <a class="navbar-brand" href="/ethereum">Ethereum</a>
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/solana/validators">Validators</a>
+                        <a class="nav-link" href="/{{ network }}/validators">Validators</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/solana/wallets">Wallets</a>
+                        <a class="nav-link" href="/{{ network }}/wallets">Wallets</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/accounts/logout">Logout</a>

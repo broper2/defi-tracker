@@ -7,7 +7,7 @@ from django.shortcuts import render
 from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.portfolio.builder import get_portfolio_adapter
 from app.basetypes import SolanaWalletData, SolanaValidatorData
-from app.config.constants import DEFI_STR
+from app.config.constants import DEFAULT_DEFI_NETWORK
 from app.forms import SolanaValidatorForm, SolanaWalletForm
 from app.models import SolanaValidator, SolanaWallet
 from app.utils.ui_data import get_validator_chart_data
@@ -24,14 +24,13 @@ def create_user(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return render(request, 'defi_index.html', {'network': DEFI_STR})
+            return render(request, 'defi_index.html', {'network': DEFAULT_DEFI_NETWORK})
     else:
         form = UserCreationForm()
-    return render(request, 'registration/create_user.html', {'form': form})
+    return render(request, 'registration/create_user.html', {'form': form, 'network': DEFAULT_DEFI_NETWORK})
 
 
 def defi_index(request, network=None):
-    network = DEFI_STR if network in (None, '', '/') else network.title()
     return render(request, 'defi_index.html', {'network': network})
 
 
@@ -49,7 +48,7 @@ def validators(request, network=None):
     chart_data = get_validator_chart_data(validator_adapter)
     if not form:
         form = SolanaValidatorForm(current_user_id)
-    return render(request, 'validators.html', {'data': chart_data, 'form': form})
+    return render(request, 'validators.html', {'data': chart_data, 'form': form, 'network': network})
 
 
 def get_validator_records(user_id):
@@ -69,7 +68,7 @@ def wallets(request, network=None):
     table_data = portfolio_adapter.composite_data
     if not form:
         form = SolanaWalletForm(current_user_id)
-    return render(request, 'wallets.html', {'data': table_data, 'form': form})
+    return render(request, 'wallets.html', {'data': table_data, 'form': form, 'network': network})
 
 
 def get_wallet_records(user_id):

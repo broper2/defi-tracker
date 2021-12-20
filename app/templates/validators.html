@@ -40,7 +40,7 @@
                             stacked: false,
                             title: {
                                 display: true,
-                                text: 'Solana Validator Tracker',},
+                                text: '{{ network | capfirst }} Validator Tracker',},
                             legend: {
                                 display: true,
                                 position: 'bottom'
@@ -55,7 +55,7 @@
                                 xAxes: [{
                                     scaleLabel: {
                                         display: true,
-                                        labelString: 'Solana Epoch'
+                                        labelString: '{{ network | capfirst }} Epoch'
                                     }
                                 }],
                                 y: {
