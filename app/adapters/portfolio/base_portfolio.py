@@ -4,34 +4,74 @@ from app.external.binance_api import BinanceApiInterface
 from app.utils.rounding import round_crypto, round_usd
 
 
-class PortfolioCompositeBase(ABC):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.binance_api = BinanceApiInterface.instance()
+class CompositeBase(ABC):
 
     @property
     def composite_data(self):
         data = []
         for child in self._children:
-            data.append(child._get_composite_data())
-        data.append(self._get_composite_data())
+            data.append(child.get_component_data())
+        data.append(self.get_component_data())
         return data
 
-    def _get_composite_data(self):
+    def get_component_data(self):
         return {
-            'display_name': self._display_name,
-            'token': round_crypto(self._crypto_currency_value),
-            'usd': round_usd(self._usd_value),
-            'staked': self._staked,
+            'display_name': self.display_name,
+            'token': round_crypto(self.crypto_currency_value),
+            'usd': round_usd(self.usd_value),
+            'staked': self.staked,
         }
+
+    @property
+    @abstractmethod
+    def crypto_currency_value(self):
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def usd_value(self):
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def display_name(self):
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def staked(self):
+        raise NotImplementedError
 
     @property
     @abstractmethod
     def _children(self):
         raise NotImplementedError
 
+
+class DefiPortfolioAdapterBase(CompositeBase):
+
+    def __init__(self, tracked_wallets, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.tracked_wallets = tracked_wallets
+
     @property
+    def binance_api(self):
+        return BinanceApiInterface.instance()
+
+    @property
+    def crypto_currency_value(self):
+        return sum([child.crypto_currency_value for child in self._children])
+
+    @property
+    def usd_value(self):
+        return sum([child.usd_value for child in self._children])
+
+    @property
+    def _children(self):
+        return self._build_child_adapters(self.tracked_wallets, self._usd_rate)
+
+    @property
+    @abstractmethod
     def _child_adapter_cls(self):
         raise NotImplementedError
 
@@ -42,33 +82,31 @@ class PortfolioCompositeBase(ABC):
         return children
 
     @property
-    def _crypto_currency_value(self):
-        return sum([child._crypto_currency_value for child in self._children])
-
-    @property
-    def _usd_value(self):
-        return sum([child._usd_value for child in self._children])
-
-    @property
-    def _display_name(self):
+    def display_name(self):
         return 'Portfolio Total'
 
     @property
-    def _staked(self):
+    def staked(self):
         return 'N/A'
 
+    @property
+    @abstractmethod
+    def _usd_rate(self):
+        raise NotImplementedError
 
-class DefiWalletChildAdapter(PortfolioCompositeBase):
 
-    def __init__(self, wallet_data, usd_rate):
-        self.interface = self._interface_cls.instance()
-        self.usd_rate = usd_rate
+class DefiWalletAdapterBase(CompositeBase):
+
+    def __init__(self, wallet_data, usd_rate, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.interface = self._network_interface_cls.instance()
+        self._usd_rate = usd_rate
         self.staked_bool = wallet_data.is_staked
         self.name = wallet_data.display_name
 
     @property
     @abstractmethod
-    def _interface_cls(self):
+    def _network_interface_cls(self):
         raise NotImplementedError
 
     @property
@@ -77,17 +115,17 @@ class DefiWalletChildAdapter(PortfolioCompositeBase):
 
     @property
     @abstractmethod
-    def _crypto_currency_value(self):
+    def crypto_currency_value(self):
         raise NotImplementedError
 
     @property
-    def _usd_value(self):
-        return self._crypto_currency_value * self.usd_rate
+    def usd_value(self):
+        return self.crypto_currency_value * self._usd_rate
 
     @property
-    def _display_name(self):
+    def display_name(self):
         return self.name
 
     @property
-    def _staked(self):
+    def staked(self):
         return str(self.staked_bool)

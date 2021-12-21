@@ -17,7 +17,7 @@ class ValidatorTests(TestCase):
 
     def test_get_user_with_validators(self):
         self.client.force_login(self.user1)
-        response = self.client.get('/validators')
+        response = self.client.get('/solana/validators')
         self.assertEqual([0.0, 0.0, 2.076923, 2.7, 1.421053], response.context['data']['datasets'][0]['data'])
         self.assertEqual('name1', response.context['data']['datasets'][0]['label'])
         self.assertEqual([254, 255, 256, 257, 258], response.context['data']['labels'])
@@ -25,13 +25,13 @@ class ValidatorTests(TestCase):
 
     def test_get_user_with_no_validators(self):
         self.client.force_login(self.user3)
-        response = self.client.get('/validators')
+        response = self.client.get('/solana/validators')
         self.assertEqual({'datasets': [], 'labels': []}, response.context['data'])
         self.assertIn('form', response.context)
 
     def test_post_user_valid_validator(self):
         self.client.force_login(self.user1)
-        response = self.client.post('/validators', {'validator_vote_pubkey': 'pubkey3', 'display_name':'name3', 'user_id':'user1'})
+        response = self.client.post('/solana/validators', {'validator_vote_pubkey': 'pubkey3', 'display_name':'name3', 'user_id':'user1'})
         self.assertEqual([0.0, 0.0, 2.076923, 2.7, 1.421053], response.context['data']['datasets'][0]['data'])
         self.assertEqual('name1', response.context['data']['datasets'][0]['label'])
         self.assertEquals([3.0, 0.857143, 0.461538, -0.3, 1.263158], response.context['data']['datasets'][1]['data'])
@@ -42,7 +42,7 @@ class ValidatorTests(TestCase):
 
     def test_post_user_invalid_validator(self):
         self.client.force_login(self.user1)
-        response = self.client.post('/validators', {'validator_vote_pubkey': 'invalid_pubkey', 'display_name':'name4', 'user_id':'user1'})
+        response = self.client.post('/solana/validators', {'validator_vote_pubkey': 'invalid_pubkey', 'display_name':'name4', 'user_id':'user1'})
         self.assertEqual([0.0, 0.0, 2.076923, 2.7, 1.421053], response.context['data']['datasets'][0]['data'])
         self.assertEqual('name1', response.context['data']['datasets'][0]['label'])
         self.assertEqual([254, 255, 256, 257, 258], response.context['data']['labels'])
