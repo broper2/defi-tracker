@@ -21,7 +21,11 @@ BINANCE_API_KEYS = {
 
 LAMPORT_TO_SOL_RATE = 0.000000001
 
+WEI_TO_ETH_RATE = (1/10**18)
+
 BINANCE_SOL_PRICE_URL = 'https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDC'
+
+BINANCE_ETH_PRICE_URL = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDC' #TODO fix duplicates
 
 DEFAULT_DEFI_NETWORK = 'solana'
 

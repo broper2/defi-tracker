@@ -42,24 +42,20 @@ class PortfolioCompositeBase(ABC):
         return children
 
     @property
-    @abstractmethod
     def _crypto_currency_value(self):
-        raise NotImplementedError
+        return sum([child._crypto_currency_value for child in self._children])
 
     @property
-    @abstractmethod
     def _usd_value(self):
-        raise NotImplementedError
+        return sum([child._usd_value for child in self._children])
 
     @property
-    @abstractmethod
     def _display_name(self):
-        raise NotImplementedError
+        return 'Portfolio Total'
 
     @property
-    @abstractmethod
     def _staked(self):
-        raise NotImplementedError
+        return 'N/A'
 
 
 class DefiWalletChildAdapter(PortfolioCompositeBase):

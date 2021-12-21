@@ -8,7 +8,7 @@ from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.portfolio.builder import get_portfolio_adapter
 from app.basetypes import DefiWalletData, DefiValidatorData
 from app.config.constants import DEFAULT_DEFI_NETWORK, PROOF_OF_STAKE_DEFI, SUPPORTED_DEFI_NETWORKS
-from app.forms import DefiValidatorForm, DefiWalletForm
+from app.forms import get_wallet_form_cls, get_validator_form_cls
 from app.models import DefiValidator, DefiWallet
 from app.utils.ui_data import get_validator_chart_data
 
@@ -35,49 +35,55 @@ def is_invalid_network(network):
 
 
 def defi_index(request, network='solana'):
-    if is_invalid_network(network):
+    if is_invalid_network(network): #TODO this needs testing
         render(request, 'defi_index.html', {'network': DEFAULT_DEFI_NETWORK})
     return render(request, 'defi_index.html', {'network': network})
 
 
 def validators(request, network=None):
+    if is_invalid_network(network):
+        render(request, 'defi_index.html', {'network': DEFAULT_DEFI_NETWORK})
     current_user_id = request.user.username
     if network not in PROOF_OF_STAKE_DEFI:
         return render(request, 'validators.html', {'network': network})
     form = None
+    form_cls = get_validator_form_cls(network)
     if request.method == 'POST':
-        form = DefiValidatorForm(current_user_id, request.POST)
+        form = form_cls(current_user_id, network, request.POST)
         if form.is_valid():
-            form.save()
-    tracked_validator_models = get_validator_records(current_user_id)
+            form.save() #TODO need to be saving network
+    tracked_validator_models = get_validator_records(current_user_id, network)
     tracked_validators = [DefiValidatorData(model.validator_vote_pubkey, model.display_name) for model in
                           tracked_validator_models]
     validator_adapter = get_validator_adapter(network, tracked_validators)
     chart_data = get_validator_chart_data(validator_adapter)
     if not form:
-        form = DefiValidatorForm(current_user_id)
+        form = form_cls(current_user_id, network)
     return render(request, 'validators.html', {'data': chart_data, 'form': form, 'network': network})
 
 
-def get_validator_records(user_id):
-    return DefiValidator.objects.filter(user_id=user_id)
+def get_validator_records(user_id, network):
+    return DefiValidator.objects.filter(user_id=user_id, defi_network=network)
 
 
 def wallets(request, network=None):
+    if is_invalid_network(network):
+        render(request, 'defi_index.html', {'network': DEFAULT_DEFI_NETWORK})
     current_user_id = request.user.username
     form = None
+    form_cls = get_wallet_form_cls(network)
     if request.method == 'POST':
-        form = DefiWalletForm(current_user_id, request.POST)
+        form = form_cls(current_user_id, network, request.POST)
         if form.is_valid():
             form.save()
-    wallet_models = get_wallet_records(current_user_id)
+    wallet_models = get_wallet_records(current_user_id, network)
     wallets = [DefiWalletData(model.wallet_pubkey, model.display_name, model.staked) for model in wallet_models]
     portfolio_adapter = get_portfolio_adapter(network, wallets)
     table_data = portfolio_adapter.composite_data
     if not form:
-        form = DefiWalletForm(current_user_id)
+        form = form_cls(current_user_id, network)
     return render(request, 'wallets.html', {'data': table_data, 'form': form, 'network': network})
 
 
-def get_wallet_records(user_id):
-    return DefiWallet.objects.filter(user_id=user_id)
+def get_wallet_records(current_user_id, network):
+    return DefiWallet.objects.filter(user_id=current_user_id, defi_network=network)

@@ -14,8 +14,8 @@ from app.utils.timed_cache import timed_cache
 class SolanaNetworkInterface(DefiNetworkInterfaceBase):
 
     def __init__(self, initial_validator_data_cache=True):
-        self.solana_rpc_url = os.environ['SOLANA_RPC_URL']
-        self.solana_rpc_client = Client(self.solana_rpc_url)
+        solana_rpc_url = os.environ['SOLANA_RPC_URL']
+        self.solana_rpc_client = Client(solana_rpc_url)
         if initial_validator_data_cache:
             self._get_cluster_validator_data()
 
