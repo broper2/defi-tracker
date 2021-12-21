@@ -42,8 +42,6 @@ def validators(request, network=None):
     if is_invalid_network(network):
         return defi_index(request)
     current_user_id = request.user.username
-    if network not in PROOF_OF_STAKE_DEFI:
-        return render(request, 'validators.html', {'network': network})
     form = None
     form_cls = get_validator_form_cls(network)
     if request.method == 'POST':
