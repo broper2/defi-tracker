@@ -24,25 +24,23 @@ def create_user(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return render(request, 'defi_index.html', {'network': DEFAULT_DEFI_NETWORK})
+            return defi_index(request)
     else:
         form = UserCreationForm()
     return render(request, 'registration/create_user.html', {'form': form, 'network': DEFAULT_DEFI_NETWORK})
 
 
 def is_invalid_network(network):
-    return network in SUPPORTED_DEFI_NETWORKS
+    return network not in SUPPORTED_DEFI_NETWORKS
 
 
-def defi_index(request, network='solana'):
-    if is_invalid_network(network): #TODO this needs testing
-        render(request, 'defi_index.html', {'network': DEFAULT_DEFI_NETWORK})
-    return render(request, 'defi_index.html', {'network': network})
+def defi_index(request):
+    return render(request, 'defi_index.html')
 
 
 def validators(request, network=None):
     if is_invalid_network(network):
-        render(request, 'defi_index.html', {'network': DEFAULT_DEFI_NETWORK})
+        return defi_index(request)
     current_user_id = request.user.username
     if network not in PROOF_OF_STAKE_DEFI:
         return render(request, 'validators.html', {'network': network})
@@ -51,7 +49,7 @@ def validators(request, network=None):
     if request.method == 'POST':
         form = form_cls(current_user_id, network, request.POST)
         if form.is_valid():
-            form.save() #TODO need to be saving network
+            form.save()
     tracked_validator_models = get_validator_records(current_user_id, network)
     tracked_validators = [DefiValidatorData(model.validator_vote_pubkey, model.display_name) for model in
                           tracked_validator_models]
@@ -68,7 +66,7 @@ def get_validator_records(user_id, network):
 
 def wallets(request, network=None):
     if is_invalid_network(network):
-        render(request, 'defi_index.html', {'network': DEFAULT_DEFI_NETWORK})
+        return defi_index(request)
     current_user_id = request.user.username
     form = None
     form_cls = get_wallet_form_cls(network)

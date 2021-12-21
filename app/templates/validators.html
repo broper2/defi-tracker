@@ -2,8 +2,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    {% if form %}
-        <div class="row">
+    <div class="row">
             <div class="d-flex flex-column">
                 <div class="pl-5">
                     <h2>Track new validator:</h2>
@@ -80,8 +79,5 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
-    {% else %}
-        <span>Proof of Stake not supported by {{ network | capfirst }} (yet)</span>
-    {% endif %}
+    </div>
 {% endblock %}
