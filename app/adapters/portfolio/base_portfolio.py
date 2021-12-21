@@ -53,6 +53,7 @@ class DefiPortfolioAdapterBase(CompositeBase):
     def __init__(self, tracked_wallets, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tracked_wallets = tracked_wallets
+        self._child_adapters = self._build_child_adapters(self.tracked_wallets, self._usd_rate)
 
     @property
     def binance_api(self):
@@ -68,7 +69,7 @@ class DefiPortfolioAdapterBase(CompositeBase):
 
     @property
     def _children(self):
-        return self._build_child_adapters(self.tracked_wallets, self._usd_rate)
+        return self._child_adapters
 
     @property
     @abstractmethod
