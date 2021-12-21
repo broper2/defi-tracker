@@ -1,5 +1,5 @@
 import collections
 
 
-SolanaValidatorData = collections.namedtuple('SolanaValidatorData', ['key', 'display_name'])
-SolanaWalletData = collections.namedtuple('SolanaWalletData', ['key', 'display_name', 'is_staked'])
+DefiValidatorData = collections.namedtuple('DefiValidatorData', ['key', 'display_name'])
+DefiWalletData = collections.namedtuple('DefiWalletData', ['key', 'display_name', 'is_staked'])

@@ -2,12 +2,12 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    {% if network == 'Solana' %}
+    {% if form %}
         <div class="row">
             <div class="d-flex flex-column">
                 <div class="pl-5">
                     <h2>Track new validator:</h2>
-                    <form method="post" action="/validators" class="data-form">
+                    <form method="post" action="/{{ network }}/validators" class="data-form">
                         {% csrf_token %}
                         {{ form.as_p }}
                         {% if form.errors %}

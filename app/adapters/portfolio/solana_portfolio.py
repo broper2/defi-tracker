@@ -1,21 +1,22 @@
-from app.adapters.portfolio.base_portfolio import PortfolioCompositeBase
+from app.adapters.portfolio.base_portfolio import PortfolioCompositeBase, DefiWalletChildAdapter
 from app.config.constants import LAMPORT_TO_SOL_RATE
-from app.external.binance_api import BinanceApiInterface
 from app.external.solana_network import SolanaNetworkInterface
 
 
 class SolanaPortfolioDataAdapter(PortfolioCompositeBase):
 
     def __init__(self, tracked_wallets):
-        self.binance_api = BinanceApiInterface.instance()
+        super().__init__()
         usd_sol_rate = self.binance_api.get_sol_usd_rate()
-        self.child_adapters = []
-        for tracked_wallet in tracked_wallets:
-            self.child_adapters.append(SolanaWalletDataAdapter(tracked_wallet, usd_sol_rate))
+        self.child_adapters = self._build_child_adapters(tracked_wallets, usd_sol_rate)
 
     @property
     def _children(self):
         return self.child_adapters
+
+    @property
+    def _child_adapter_cls(self):
+        return SolanaWalletDataAdapter
 
     @property
     def _crypto_currency_value(self):
@@ -34,31 +35,16 @@ class SolanaPortfolioDataAdapter(PortfolioCompositeBase):
         return 'N/A'
 
 
-class SolanaWalletDataAdapter(PortfolioCompositeBase):
+class SolanaWalletDataAdapter(DefiWalletChildAdapter):
 
-    def __init__(self, wallet_data, usd_sol_rate):
-        interface = SolanaNetworkInterface.instance()
-        self._lamport_value = interface.get_account_balance(wallet_data.key)
-        self.usd_sol_rate = usd_sol_rate
-        self.staked_bool = wallet_data.is_staked
-        self.name = wallet_data.display_name
+    def __init__(self, wallet_data, *args):
+        super().__init__(wallet_data, *args)
+        self._lamport_value = self.interface.get_account_balance(wallet_data.key)
 
     @property
-    def _children(self):
-        return []
+    def _interface_cls(self):
+        return SolanaNetworkInterface
 
     @property
     def _crypto_currency_value(self):
         return self._lamport_value * LAMPORT_TO_SOL_RATE
-
-    @property
-    def _usd_value(self):
-        return self._crypto_currency_value * self.usd_sol_rate
-
-    @property
-    def _display_name(self):
-        return self.name
-
-    @property
-    def _staked(self):
-        return str(self.staked_bool)

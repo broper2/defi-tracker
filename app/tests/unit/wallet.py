@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from django.test import TestCase
 from django.contrib.auth.models import User
-from app.models import SolanaWallet
+from app.models import DefiWallet
 
 
 def mock_is_active_pubkey(interface, pubkey):
@@ -17,8 +17,8 @@ class WalletTests(TestCase):
     def setUpTestData(cls):
         cls.user1 = User.objects.create(username='user1', password='pswd1')
         cls.user3 = User.objects.create(username='user3', password='pswd3')
-        cls.wallet1 = SolanaWallet.objects.create(wallet_pubkey='pubkey1', display_name='name1', user_id='user1', staked=True)
-        cls.wallet2 = SolanaWallet.objects.create(wallet_pubkey='pubkey2', display_name='name2', user_id='user2', staked=False)
+        cls.wallet1 = DefiWallet.objects.create(wallet_pubkey='pubkey1', display_name='name1', user_id='user1', staked=True)
+        cls.wallet2 = DefiWallet.objects.create(wallet_pubkey='pubkey2', display_name='name2', user_id='user2', staked=False)
 
     @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
     def test_get_user_with_wallets(self):

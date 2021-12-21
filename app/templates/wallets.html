@@ -7,7 +7,7 @@
     <div class="d-flex flex-column">
         <div class="pl-5">
             <h2>Track new wallet:</h2>
-            <form method="post" action="/wallets" class="data-form">
+            <form method="post" action="/{{ network }}/wallets" class="data-form">
                 {% csrf_token %}
                 {{ form.as_p }}
                 {% if form.errors %}
@@ -35,12 +35,12 @@
                         <tr>
                         {% if wallet.display_name == 'Portfolio Total' %}
                             <td><i>{{wallet.display_name}}</i></td>
-                            <td><i>{{wallet.sol}}</i></td>
+                            <td><i>{{wallet.token}}</i></td>
                             <td><i>${{wallet.usd}}</i></td>
                             <td><i>{{wallet.staked}}</i></td>
                         {% else %}
                             <td>{{wallet.display_name}}</td>
-                            <td>{{wallet.sol}}</td>
+                            <td>{{wallet.token}}</td>
                             <td>${{wallet.usd}}</td>
                             <td>{{wallet.staked}}</td>
                         {% endif %}

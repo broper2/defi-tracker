@@ -1,5 +1,5 @@
 from app.adapters.validator.solana_validator import SolanaValidatorDataAdapter
-from app.basetypes import SolanaValidatorData
+from app.basetypes import DefiValidatorData
 from app.config.constants import SOLANA_VALIDATOR_HISTORY_LENGTH
 from app.external.solana_network import SolanaNetworkInterface
 
@@ -9,7 +9,7 @@ def get_top_validators(num_validators=5, num_epochs=5):
     # Not used in app, but useful tool
     num_epochs = min(num_epochs, SOLANA_VALIDATOR_HISTORY_LENGTH)
     interface = SolanaNetworkInterface()
-    validators = [SolanaValidatorData(key, None) for key in interface.vote_account_keys]
+    validators = [DefiValidatorData(key, None) for key in interface.vote_account_keys]
     adapter = SolanaValidatorDataAdapter(validators)
     sum_performances = [sum(x[0-num_epochs:len(x)]) for x in adapter.get_chart_data()]
     validators_and_performances = list(zip(validators, sum_performances))

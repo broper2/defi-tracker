@@ -6,19 +6,12 @@ from solana.rpc.api import Client
 
 from app.config.constants import SOLANA_RPC_KEYS, SOLANA_VALIDATOR_HISTORY_LENGTH
 from app.exceptions.solana_external import SolanaExternalNetworkException
+from app.external.defi_network_base import DefiNetworkInterfaceBase
 from app.utils.error_handling import handle_exceptions
 from app.utils.timed_cache import timed_cache
 
 
-class SolanaNetworkInterface(object):
-
-    _instance = None
-
-    @classmethod
-    def instance(cls):
-        if not cls._instance:
-            cls._instance = cls()
-        return cls._instance
+class SolanaNetworkInterface(DefiNetworkInterfaceBase):
 
     def __init__(self, initial_validator_data_cache=True):
         self.solana_rpc_url = os.environ['SOLANA_RPC_URL']

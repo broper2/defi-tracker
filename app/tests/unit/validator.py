@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from django.test import TestCase
 from django.contrib.auth.models import User
-from app.models import SolanaValidator
+from app.models import DefiValidator
 from .constants import MOCK_VALIDATOR_DATA
 
 @patch('app.external.solana_network.SolanaNetworkInterface._fetch_and_cache_validator_data', new=lambda *args, **kwargs: MOCK_VALIDATOR_DATA)
@@ -12,8 +12,8 @@ class ValidatorTests(TestCase):
     def setUpTestData(cls):
         cls.user1 = User.objects.create(username='user1', password='pswd1')
         cls.user3 = User.objects.create(username='user3', password='pswd3')
-        cls.validator1 = SolanaValidator.objects.create(validator_vote_pubkey='pubkey1', display_name='name1', user_id='user1')
-        cls.validator2 = SolanaValidator.objects.create(validator_vote_pubkey='pubkey2', display_name='name2', user_id='user2')
+        cls.validator1 = DefiValidator.objects.create(validator_vote_pubkey='pubkey1', display_name='name1', user_id='user1')
+        cls.validator2 = DefiValidator.objects.create(validator_vote_pubkey='pubkey2', display_name='name2', user_id='user2')
 
     def test_get_user_with_validators(self):
         self.client.force_login(self.user1)
