@@ -2,8 +2,8 @@
 Django application to track DeFi investments, all you need is the public keys!
 
 Functionalities:
-  - User accounts for custom validators/wallets tracking
-  - Ethereum and Solana wallet token value, with up-to-date USD conversion, and sum functionality for entire tracked portfolio
+  - User accounts for personalized validators/wallets tracking
+  - Ethereum and Solana account value (token and USD conversion) and sum functionality for entire tracked portfolio
     - To track a wallet's value, enter the wallet public key and a personalized display name
   - Interactive performance graph for Solana validator(s) (useful for staking investment decisions)
     - To track a validator performance, enter the vote account public key and a personalized display name
