@@ -7,7 +7,7 @@ from django.shortcuts import render
 from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.portfolio.builder import get_portfolio_adapter
 from app.basetypes import DefiWalletData, DefiValidatorData
-from app.config.constants import DEFAULT_DEFI_NETWORK, PROOF_OF_STAKE_DEFI
+from app.config.constants import DEFAULT_DEFI_NETWORK, PROOF_OF_STAKE_DEFI, SUPPORTED_DEFI_NETWORKS
 from app.forms import DefiValidatorForm, DefiWalletForm
 from app.models import DefiValidator, DefiWallet
 from app.utils.ui_data import get_validator_chart_data
@@ -30,7 +30,13 @@ def create_user(request):
     return render(request, 'registration/create_user.html', {'form': form, 'network': DEFAULT_DEFI_NETWORK})
 
 
+def is_invalid_network(network):
+    return network in SUPPORTED_DEFI_NETWORKS
+
+
 def defi_index(request, network='solana'):
+    if is_invalid_network(network):
+        render(request, 'defi_index.html', {'network': DEFAULT_DEFI_NETWORK})
     return render(request, 'defi_index.html', {'network': network})
 
 
