@@ -3,7 +3,9 @@ import os
 from web3 import Web3
 from web3.exceptions import InvalidAddress
 
+from app.exceptions.ethereum_external import EthereumExternalNetworkException
 from app.external.defi_network_base import DefiNetworkInterfaceBase
+from app.utils.error_handling import handle_exceptions
 
 
 class EthereumNetworkInterface(DefiNetworkInterfaceBase):
@@ -19,6 +21,6 @@ class EthereumNetworkInterface(DefiNetworkInterfaceBase):
             return False
         return True
 
-    #TODO catch web3 error
+    @handle_exceptions(EthereumExternalNetworkException, InvalidAddress)
     def get_account_balance(self, pubkey):
         return self.eth.get_balance(pubkey)

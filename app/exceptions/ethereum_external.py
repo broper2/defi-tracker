@@ -1,0 +1,4 @@
+from app.exceptions.solana_tracker_base import DeFiTrackerProcessingException
+
+
+class EthereumExternalNetworkException(DeFiTrackerProcessingException): pass
