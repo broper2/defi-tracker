@@ -1,4 +1,4 @@
-from app.exceptions.solana_tracker_base import SolanaTrackerProcessingException
+from app.exceptions.solana_tracker_base import DeFiTrackerProcessingException
 
 
-class SolanaExternalNetworkException(SolanaTrackerProcessingException): pass
+class SolanaExternalNetworkException(DeFiTrackerProcessingException): pass

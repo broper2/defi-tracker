@@ -19,5 +19,6 @@ class EthereumNetworkInterface(DefiNetworkInterfaceBase):
             return False
         return True
 
+    #TODO catch web3 error
     def get_account_balance(self, pubkey):
         return self.eth.get_balance(pubkey)
