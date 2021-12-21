@@ -3,11 +3,15 @@
 
 {% block content %}
 <body>
-{% if user.is_authenticated %}
-<span>Keep track of all your DeFi investments!</span>
-{% else %}
-<span>Sign in to track DeFi investments!</span>
-{% endif %}
+<span style="text-align: center">
+    {% if user.is_authenticated %}
+        <b><i>Keep track of all your DeFi investments!</i></b>
+    {% else %}
+        <b><i>Sign in to track DeFi investments!</i></b>
+    {% endif %}
+    <br>DeFi Tracker was developed by Brian Roper
+    <br>All code is open-source and can be found at <a href="https://github.com/broper2/solana-tracker">Github</a>
+</span>
 
 </body>
 
