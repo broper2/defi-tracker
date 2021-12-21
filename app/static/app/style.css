@@ -18,3 +18,17 @@ table {
 .data-form {
     margin-right: 30px;
 }
+
+a.nav-a-dropdown {
+    color: white;
+    padding-right: 20px;
+}
+
+ul.black-dropdown {
+    background-color: #212529;
+}
+
+a.dropdown-text {
+    color: white;
+    padding-right: 15px;
+}

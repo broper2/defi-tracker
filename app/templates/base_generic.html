@@ -8,35 +8,56 @@
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'app/style.css' %}">
 
+        <script type="text/javascript" src="{% static   'dist/jquery.js' %}"></script>
+        <script type="text/javascript" src="{% static   'js/bootstrap.js' %}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
 
     </head>
 
     <body>
-
-    <nav class="navbar navbar-expand navbar-dark bg-dark navbar-background">
-        <a class="navbar-brand" href="/solana">Solana</a>
-        <a class="navbar-brand" href="/ethereum">Ethereum</a>
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-            <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/{{ network }}/validators">Validators</a>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        {% if user.is_authenticated %}
+            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+                <ul class="navbar-nav mr-auto">
+                    <li class="dropdown nav-item">
+                        <a href="#" class="dropdown-toggle nav-link active nav-a-dropdown" data-toggle="dropdown">
+                            <span>Solana</span>
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="black-dropdown dropdown-menu">
+                            <li style="text-align: center;"><a class="dropdown-text" href="/solana/validators">Track Validators</a></li>
+                            <li style="text-align: center;"><a class="dropdown-text" href="/solana/wallets">Track Wallets</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/{{ network }}/wallets">Wallets</a>
+                    <li class="dropdown nav-item">
+                        <a href="#" class="dropdown-toggle nav-link active nav-a-dropdown" data-toggle="dropdown">
+                            <span>Ethereum</span>
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="black-dropdown dropdown-menu">
+                            <li style="text-align: center;"><a class="dropdown-text" href="/ethereum/wallets">Track Wallets</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/accounts/logout">Logout</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/accounts/login">Login</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
+                </ul>
+            </div>
+            {% endif %}
+            <div class="mx-auto order-0">
+                <a class="navbar-brand mx-auto" href="/"><i>Welcome to DeFi Tracker!</i></a>
+            </div>
+            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/accounts/logout">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/accounts/login">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
     </nav>
     <div class="d-flex justify-content-center pt-lg-5 background">
         {% block content %}{% endblock content %}
