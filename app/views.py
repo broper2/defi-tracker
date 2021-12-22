@@ -1,8 +1,9 @@
 import logging
 
 from django.contrib.auth import authenticate, login
+
 from app.forms import CustomUserCreationForm
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.portfolio.builder import get_portfolio_adapter
@@ -53,7 +54,7 @@ def validators(request, network=None):
                           tracked_validator_models]
     validator_adapter = get_validator_adapter(network, tracked_validators_data)
     chart_data = get_validator_chart_data(validator_adapter)
-    modal_form_data = get_delete_modal_form_data(tracked_validators_data)
+    modal_form_data = get_delete_modal_form_data(tracked_validator_models)
     if not form:
         form = form_cls(current_user_id, network)
     return render(request, 'validators.html', {'data': chart_data, 'form': form, 'network': network, 'modal_data': modal_form_data})
@@ -77,7 +78,7 @@ def wallets(request, network=None):
     tracked_wallets_data = [DefiWalletData(model.wallet_pubkey, model.display_name, model.staked) for model in tracked_wallet_models]
     portfolio_adapter = get_portfolio_adapter(network, tracked_wallets_data)
     table_data = portfolio_adapter.composite_data
-    modal_form_data = get_delete_modal_form_data(tracked_wallets_data)
+    modal_form_data = get_delete_modal_form_data(tracked_wallet_models)
     if not form:
         form = form_cls(current_user_id, network)
     return render(request, 'wallets.html', {'data': table_data, 'form': form, 'network': network, 'modal_data': modal_form_data})
@@ -87,5 +88,26 @@ def get_wallet_records(current_user_id, network):
     return DefiWallet.objects.filter(user_id=current_user_id, defi_network=network)
 
 
-def get_delete_modal_form_data(tracked_data):
-    return [{'key': data.key, 'display_name': data.display_name} for data in tracked_data]
+def get_delete_modal_form_data(defi_models):
+    return [{'key': model.pk, 'display_name': model.display_name} for model in defi_models]
+
+
+def delete_validator(request, network=None): #TODO make helpers private, move public up
+    if not request.method == 'POST':
+        return redirect('validators', network=network, permanent=True)
+    pk = request.POST['modelpk']
+    validator = get_model_by_pk(DefiValidator, pk)
+    if not is_authenticated_to_delete(validator, request):
+        return redirect('validators', network=network, permanent=True)
+    validator.delete()
+    return redirect('validators', network=network, permanent=True)
+
+
+def is_authenticated_to_delete(model, request):
+    current_user_id = request.user.username
+    return model and model.user_id == current_user_id
+
+
+def get_model_by_pk(model_cls, pk):
+    model_query = model_cls.objects.filter(pk=pk)
+    return model_query[0] if model_query else None
