@@ -16,5 +16,5 @@ To check it out in action, see below:
   - Create a new account, then track validators and wallets of interest to you, or you can always use the sample keys below:
     - Solana validator: rep1xGEJzUiQCQgnYjNn76mFRpiPaZaKRwc13wm8mNr
     - Solana wallet: 4DfKXjLB5f2zJJ65pxt7zjyfHjR92zDFi6nEy2DFmF95
-    - Ethereum wallet: 0xB02923F4484FcC6aeA0915B6916D7D470194b7bd
+    - Ethereum wallet: 0x71C7656EC7ab88b098defB751B7401B5f6d8976F
   - Enjoy!
