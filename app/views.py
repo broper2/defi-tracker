@@ -49,13 +49,14 @@ def validators(request, network=None):
         if form.is_valid():
             form.save()
     tracked_validator_models = get_validator_records(current_user_id, network)
-    tracked_validators = [DefiValidatorData(model.validator_vote_pubkey, model.display_name) for model in
+    tracked_validators_data = [DefiValidatorData(model.validator_vote_pubkey, model.display_name) for model in
                           tracked_validator_models]
-    validator_adapter = get_validator_adapter(network, tracked_validators)
+    validator_adapter = get_validator_adapter(network, tracked_validators_data)
     chart_data = get_validator_chart_data(validator_adapter)
+    modal_form_data = get_delete_modal_form_data(tracked_validators_data)
     if not form:
         form = form_cls(current_user_id, network)
-    return render(request, 'validators.html', {'data': chart_data, 'form': form, 'network': network})
+    return render(request, 'validators.html', {'data': chart_data, 'form': form, 'network': network, 'modal_data': modal_form_data})
 
 
 def get_validator_records(user_id, network):
@@ -72,14 +73,19 @@ def wallets(request, network=None):
         form = form_cls(current_user_id, network, request.POST)
         if form.is_valid():
             form.save()
-    wallet_models = get_wallet_records(current_user_id, network)
-    wallets_data = [DefiWalletData(model.wallet_pubkey, model.display_name, model.staked) for model in wallet_models]
-    portfolio_adapter = get_portfolio_adapter(network, wallets_data)
+    tracked_wallet_models = get_wallet_records(current_user_id, network)
+    tracked_wallets_data = [DefiWalletData(model.wallet_pubkey, model.display_name, model.staked) for model in tracked_wallet_models]
+    portfolio_adapter = get_portfolio_adapter(network, tracked_wallets_data)
     table_data = portfolio_adapter.composite_data
+    modal_form_data = get_delete_modal_form_data(tracked_wallets_data)
     if not form:
         form = form_cls(current_user_id, network)
-    return render(request, 'wallets.html', {'data': table_data, 'form': form, 'network': network})
+    return render(request, 'wallets.html', {'data': table_data, 'form': form, 'network': network, 'modal_data': modal_form_data})
 
 
 def get_wallet_records(current_user_id, network):
     return DefiWallet.objects.filter(user_id=current_user_id, defi_network=network)
+
+
+def get_delete_modal_form_data(tracked_data):
+    return [{'key': data.key, 'display_name': data.display_name} for data in tracked_data]
