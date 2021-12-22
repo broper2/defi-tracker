@@ -1,7 +1,7 @@
 # defi-tracker
 Django application to track DeFi investments, all you need is the public keys!
 
-Functionalities:
+Supported Functionalities:
   - User accounts for personalized validators/wallets tracking
   - Ethereum and Solana account value (token and USD conversion) and sum functionality for entire tracked portfolio
     - To track a wallet's value, enter the wallet public key and a personalized display name
@@ -10,6 +10,10 @@ Functionalities:
     - Validator performance metric is derived from Solana economic documentation, directly related to APY %
       - A "network-average" validator with 0% commission will yield performance metric of 1.0
       - The higher the performance metric, the better yield on tokens staked to that validator!
+
+In Development:
+ - ENS tracking for Ethereum wallets
+ - Eliminate display name entry for Solana validators, default to validators registered name
 
 To check it out in action, see below:
   - Barring any maintenance, DeFi Tracker is deployed to https://intense-brook-56676.herokuapp.com/
