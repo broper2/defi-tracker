@@ -31,7 +31,7 @@ def create_user(request):
     return render(request, 'registration/create_user.html', {'form': form, 'network': DEFAULT_DEFI_NETWORK})
 
 
-def defi_index(request):
+def defi_index(request, **kwargs):
     return render(request, 'defi_index.html')
 
 
