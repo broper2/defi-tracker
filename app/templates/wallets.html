@@ -11,11 +11,11 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 {% if form.errors %}
-                {% for field in form %}
-                {% for error in field.errors %}
-                <p> {{ error }} </p>
-                {% endfor %}
-                {% endfor %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p> {{ error }} </p>
+                        {% endfor %}
+                    {% endfor %}
                 {% endif %}
                 <button type="submit">Submit</button>
             </form>

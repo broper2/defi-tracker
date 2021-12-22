@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from .external.ethereum_network import EthereumNetworkInterface
@@ -17,14 +19,25 @@ class DefiValidatorForm(forms.ModelForm):
         super(DefiValidatorForm, self).__init__(*args, **kwargs)
         self.initial['user_id'] = user
         self.initial['defi_network'] = network
-        self.solana_network_interface = SolanaNetworkInterface.instance()
-        self.valid_pubkeys = self.solana_network_interface.vote_account_keys
+        self.interface = self.network_interface_cls.instance()
+        self.valid_pubkeys = self.interface.vote_account_keys
+        self.initial['user_id'] = user
+        self.initial['defi_network'] = network
+        self.interface = self.network_interface_cls.instance()
+        self.fields['validator_vote_pubkey'].widget.attrs['class'] = 'form-control'
+        self.fields['display_name'].widget.attrs['class'] = 'form-control'
+        self.fields['user_id'].widget.attrs['class'] = 'form-control'
+        self.fields['defi_network'].widget.attrs['class'] = 'form-control'
 
     def clean(self):
         super().clean()
         if not self.cleaned_data['validator_vote_pubkey'] in self.valid_pubkeys:
             raise ValidationError('Invalid vote account pubkey')
         return self.cleaned_data
+
+    @property
+    def network_interface_cls(self):
+        raise NotImplementedError
 
     class Meta:
         model = DefiValidator
@@ -33,7 +46,9 @@ class DefiValidatorForm(forms.ModelForm):
 
 class SolanaValidatorForm(DefiValidatorForm):
 
-    pass
+    @property
+    def network_interface_cls(self):
+        return SolanaNetworkInterface
 
 
 def get_validator_form_cls(network):
@@ -48,7 +63,7 @@ class DefiWalletForm(forms.ModelForm):
     wallet_pubkey = forms.CharField(max_length=100)
     display_name = forms.CharField(max_length=50)
     user_id = forms.CharField(max_length=50, widget=forms.HiddenInput())
-    staked = forms.BooleanField(required=False) #TODO should be disabled on ethereum - use constants POS
+    staked = forms.BooleanField(required=False)
     defi_network = forms.CharField(max_length=50, disabled=True)
 
     def __init__(self, user, network, *args, **kwargs):
@@ -56,6 +71,11 @@ class DefiWalletForm(forms.ModelForm):
         self.initial['user_id'] = user
         self.initial['defi_network'] = network
         self.interface = self.network_interface_cls.instance()
+        self.fields['wallet_pubkey'].widget.attrs['class'] = 'form-control'
+        self.fields['display_name'].widget.attrs['class'] = 'form-control'
+        self.fields['user_id'].widget.attrs['class'] = 'form-control'
+        self.fields['staked'].widget.attrs['class'] = 'mt-2'
+        self.fields['defi_network'].widget.attrs['class'] = 'form-control'
 
     @property
     def network_interface_cls(self):
@@ -63,9 +83,13 @@ class DefiWalletForm(forms.ModelForm):
 
     def clean(self):
         super().clean()
-        if not self.interface.is_valid_account_pubkey(self.cleaned_data['wallet_pubkey']):
+        if self._is_invalid_pubkey(self.cleaned_data['wallet_pubkey']):
             raise ValidationError('Invalid wallet pubkey')
         return self.cleaned_data
+
+    def _is_invalid_pubkey(self, pubkey):
+        return not self.interface.is_valid_account_pubkey(pubkey)
+
 
     class Meta:
         model = DefiWallet
@@ -94,3 +118,17 @@ def get_wallet_form_cls(network):
         'ETHEREUM': EthereumWalletForm,
     }
     return validator_form_map[network.upper()]
+
+
+class CustomUserCreationForm(UserCreationForm):
+
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+
+        self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['password1'].widget.attrs['class'] = 'form-control'
+        self.fields['password2'].widget.attrs['class'] = 'form-control'

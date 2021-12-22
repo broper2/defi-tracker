@@ -1,7 +1,7 @@
 import logging
 
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
+from app.forms import CustomUserCreationForm
 from django.shortcuts import render
 
 from app.adapters.validator.builder import get_validator_adapter
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def create_user(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -26,7 +26,7 @@ def create_user(request):
             login(request, user)
             return defi_index(request)
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'registration/create_user.html', {'form': form, 'network': DEFAULT_DEFI_NETWORK})
 
 
@@ -73,8 +73,8 @@ def wallets(request, network=None):
         if form.is_valid():
             form.save()
     wallet_models = get_wallet_records(current_user_id, network)
-    wallets = [DefiWalletData(model.wallet_pubkey, model.display_name, model.staked) for model in wallet_models]
-    portfolio_adapter = get_portfolio_adapter(network, wallets)
+    wallets_data = [DefiWalletData(model.wallet_pubkey, model.display_name, model.staked) for model in wallet_models]
+    portfolio_adapter = get_portfolio_adapter(network, wallets_data)
     table_data = portfolio_adapter.composite_data
     if not form:
         form = form_cls(current_user_id, network)
