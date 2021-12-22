@@ -12,7 +12,7 @@ Functionalities:
       - The higher the performance metric, the better yield on tokens staked to that validator!
 
 To check it out in action, see below:
-  - Barring any maintenance, DeFi Tracker is deployed to https://intense-brook-56676.herokuapp.com/
+  - Barring any maintenance, a demo of DeFi Tracker is deployed to https://intense-brook-56676.herokuapp.com/
   - Create a new account, then track validators and wallets of interest to you, or you can always use the sample keys below:
     - Solana validator: rep1xGEJzUiQCQgnYjNn76mFRpiPaZaKRwc13wm8mNr
     - Solana wallet: 4DfKXjLB5f2zJJ65pxt7zjyfHjR92zDFi6nEy2DFmF95
