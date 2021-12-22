@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.portfolio.builder import get_portfolio_adapter
 from app.basetypes import DefiWalletData, DefiValidatorData
-from app.config.constants import DEFAULT_DEFI_NETWORK, PROOF_OF_STAKE_DEFI, SUPPORTED_DEFI_NETWORKS
+from app.config.constants import DEFAULT_DEFI_NETWORK, SUPPORTED_DEFI_NETWORKS
 from app.forms import get_wallet_form_cls, get_validator_form_cls
 from app.models import DefiValidator, DefiWallet
 from app.utils.ui_data import get_validator_chart_data
@@ -117,6 +117,7 @@ def delete_wallet(request, network=None): #TODO make helpers private, move publi
 def is_authenticated_to_delete(model, request):
     current_user_id = request.user.username
     return model and model.user_id == current_user_id
+
 
 def is_correct_network(model, network):
     return model.defi_network == network.lower()

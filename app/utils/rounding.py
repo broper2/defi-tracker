@@ -1,5 +1,3 @@
-
-
 def round_credit_rate(rate):
     return _round(rate, 6)
 

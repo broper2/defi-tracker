@@ -29,6 +29,4 @@ BINANCE_ETH_PRICE_URL = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHU
 
 DEFAULT_DEFI_NETWORK = 'solana'
 
-PROOF_OF_STAKE_DEFI = ['solana']
-
 SUPPORTED_DEFI_NETWORKS = ['solana', 'ethereum']

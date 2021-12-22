@@ -25,5 +25,9 @@ class SolanaWalletDataAdapter(DefiWalletAdapterBase):
         return SolanaNetworkInterface
 
     @property
+    def _network_interface_cls_kwargs(self):
+        return dict(initial_validator_data_cache=False)
+
+    @property
     def crypto_currency_value(self):
         return self._lamport_value * LAMPORT_TO_SOL_RATE

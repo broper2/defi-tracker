@@ -100,7 +100,7 @@ class DefiWalletAdapterBase(CompositeBase):
 
     def __init__(self, wallet_data, usd_rate, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.interface = self._network_interface_cls.instance(initial_validator_data_cache=False)
+        self.interface = self._network_interface_cls.instance(**self._network_interface_cls_kwargs)
         self._usd_rate = usd_rate
         self.staked_bool = wallet_data.is_staked
         self.name = wallet_data.display_name
@@ -109,6 +109,10 @@ class DefiWalletAdapterBase(CompositeBase):
     @abstractmethod
     def _network_interface_cls(self):
         raise NotImplementedError
+
+    @property
+    def _network_interface_cls_kwargs(self):
+        return dict()
 
     @property
     def _children(self):
