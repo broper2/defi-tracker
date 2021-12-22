@@ -19,7 +19,7 @@ class DefiValidatorForm(forms.ModelForm):
         super(DefiValidatorForm, self).__init__(*args, **kwargs)
         self.initial['user_id'] = user
         self.initial['defi_network'] = network
-        self.interface = self.network_interface_cls.instance()
+        self.interface = self._network_interface_cls.instance()
         self.valid_pubkeys = self.interface.vote_account_keys
         self.initial['user_id'] = user
         self.initial['defi_network'] = network
@@ -35,7 +35,7 @@ class DefiValidatorForm(forms.ModelForm):
         return self.cleaned_data
 
     @property
-    def network_interface_cls(self):
+    def _network_interface_cls(self):
         raise NotImplementedError
 
     class Meta:
@@ -46,7 +46,7 @@ class DefiValidatorForm(forms.ModelForm):
 class SolanaValidatorForm(DefiValidatorForm):
 
     @property
-    def network_interface_cls(self):
+    def _network_interface_cls(self):
         return SolanaNetworkInterface
 
 
@@ -69,7 +69,7 @@ class DefiWalletForm(forms.ModelForm):
         super(DefiWalletForm, self).__init__(*args, **kwargs)
         self.initial['user_id'] = user
         self.initial['defi_network'] = network
-        self.interface = self.network_interface_cls.instance(initial_validator_data_cache=False)
+        self.interface = self._network_interface_cls.instance(initial_validator_data_cache=False)
         self.fields['wallet_pubkey'].widget.attrs['class'] = 'form-control'
         self.fields['display_name'].widget.attrs['class'] = 'form-control'
         self.fields['user_id'].widget.attrs['class'] = 'form-control'
@@ -77,7 +77,7 @@ class DefiWalletForm(forms.ModelForm):
         self.fields['defi_network'].widget.attrs['class'] = 'form-control'
 
     @property
-    def network_interface_cls(self):
+    def _network_interface_cls(self):
         raise NotImplementedError
 
     def clean(self):
@@ -98,7 +98,7 @@ class DefiWalletForm(forms.ModelForm):
 class SolanaWalletForm(DefiWalletForm):
 
     @property
-    def network_interface_cls(self):
+    def _network_interface_cls(self):
         return SolanaNetworkInterface
 
 
@@ -107,7 +107,7 @@ class EthereumWalletForm(DefiWalletForm):
     staked = forms.BooleanField(required=False, disabled=True)
 
     @property
-    def network_interface_cls(self):
+    def _network_interface_cls(self):
         return EthereumNetworkInterface
 
 
