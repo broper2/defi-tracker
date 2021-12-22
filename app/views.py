@@ -103,6 +103,17 @@ def delete_validator(request, network=None): #TODO make helpers private, move pu
     return redirect('validators', network=network, permanent=True)
 
 
+def delete_wallet(request, network=None): #TODO make helpers private, move public up
+    if not request.method == 'POST':
+        return redirect('wallets', network=network, permanent=True)
+    pk = request.POST['modelpk']
+    wallet = get_model_by_pk(DefiWallet, pk)
+    if not is_authenticated_to_delete(wallet, request):
+        return redirect('wallets', network=network, permanent=True)
+    wallet.delete()
+    return redirect('wallets', network=network, permanent=True)
+
+
 def is_authenticated_to_delete(model, request):
     current_user_id = request.user.username
     return model and model.user_id == current_user_id

@@ -65,22 +65,22 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form action="/{{ network }}/wallets/delete" method="post">
                             {% csrf_token %}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <label class="input-group-text" for="inputKey">Tracked Wallets</label>
+                                    <label class="input-group-text" for="modelpk">Tracked Wallets</label>
                                 </div>
-                                <select class="custom-select" id="inputKey">
+                                <select class="custom-select" name="modelpk" id="modelpk">
                                     {% for wallet in modal_data %}
                                         <option value={{ wallet.key }}>{{ wallet.display_name }}</option>{# SHOULD THIS BE DISPLAY NAME? #}
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="modal-footer">
+                                <button class="mt-3 btn btn-danger" type="submit">Stop Tracking</button>
+                            </div>
                         </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="mt-3 btn btn-danger" type="submit">Stop Tracking</button>
                     </div>
                 </div>
             </div>
