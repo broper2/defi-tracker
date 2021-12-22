@@ -10,7 +10,7 @@ from app.utils.error_handling import handle_exceptions
 
 class EthereumNetworkInterface(DefiNetworkInterfaceBase):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         ethereum_rpc_url = os.environ['ETHEREUM_NODE_URL']
         self.eth = Web3(Web3.HTTPProvider(ethereum_rpc_url)).eth
 

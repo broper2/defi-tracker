@@ -23,7 +23,6 @@ class DefiValidatorForm(forms.ModelForm):
         self.valid_pubkeys = self.interface.vote_account_keys
         self.initial['user_id'] = user
         self.initial['defi_network'] = network
-        self.interface = self.network_interface_cls.instance()
         self.fields['validator_vote_pubkey'].widget.attrs['class'] = 'form-control'
         self.fields['display_name'].widget.attrs['class'] = 'form-control'
         self.fields['user_id'].widget.attrs['class'] = 'form-control'
@@ -70,7 +69,7 @@ class DefiWalletForm(forms.ModelForm):
         super(DefiWalletForm, self).__init__(*args, **kwargs)
         self.initial['user_id'] = user
         self.initial['defi_network'] = network
-        self.interface = self.network_interface_cls.instance()
+        self.interface = self.network_interface_cls.instance(initial_validator_data_cache=False)
         self.fields['wallet_pubkey'].widget.attrs['class'] = 'form-control'
         self.fields['display_name'].widget.attrs['class'] = 'form-control'
         self.fields['user_id'].widget.attrs['class'] = 'form-control'

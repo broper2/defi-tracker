@@ -13,7 +13,7 @@ from app.utils.timed_cache import timed_cache
 
 class SolanaNetworkInterface(DefiNetworkInterfaceBase):
 
-    def __init__(self, initial_validator_data_cache=True):
+    def __init__(self, *args, initial_validator_data_cache=True):
         solana_rpc_url = os.environ['SOLANA_RPC_URL']
         self.solana_rpc_client = Client(solana_rpc_url)
         if initial_validator_data_cache:
