@@ -63,6 +63,36 @@ class SolanaWalletTests(TestCase):
         self.assertIn('form', response.context)
         self.assertTrue(response.context['form'].errors)
 
+    def test_post_delete_wallet(self):
+        self.client.force_login(self.user1)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        response = self.client.post('/solana/wallets/delete', {'modelpk': self.wallet1.pk})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(1, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+
+    def test_post_delete_missing_wallet(self):
+        self.client.force_login(self.user1)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        response = self.client.post('/solana/wallets/delete', {'modelpk': 1234567})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+
+    def test_post_delete_wallet_unauthenticated(self):
+        self.client.force_login(self.user3)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        self.assertEquals(0, len(DefiWallet.objects.filter(user_id=self.user3.username)))
+        response = self.client.post('/solana/wallets/delete', {'modelpk': self.wallet1.pk})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        self.assertEquals(0, len(DefiWallet.objects.filter(user_id=self.user3.username)))
+
+    def test_post_delete_wallet_incorrect_network(self):
+        self.client.force_login(self.user1)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        response = self.client.post('/ethereum/wallets/delete', {'modelpk': self.wallet1.pk})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+
 
 @patch('app.external.binance_api.BinanceApiInterface._get_eth_price', new=lambda *args, **kwargs: 1.545454)
 @patch('app.external.ethereum_network.EthereumNetworkInterface.get_account_balance', new=lambda *args, **kwargs: 2 * (10**18))
@@ -120,3 +150,32 @@ class EthereumWalletTests(TestCase):
         self.assertIn('form', response.context)
         self.assertTrue(response.context['form'].errors)
 
+    def test_post_delete_wallet(self):
+        self.client.force_login(self.user1)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        response = self.client.post('/ethereum/wallets/delete', {'modelpk': self.wallet1.pk})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(1, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+
+    def test_post_delete_missing_wallet(self):
+        self.client.force_login(self.user1)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        response = self.client.post('/ethereum/wallets/delete', {'modelpk': 1234567})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+
+    def test_post_delete_wallet_unauthenticated(self):
+        self.client.force_login(self.user3)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        self.assertEquals(0, len(DefiWallet.objects.filter(user_id=self.user3.username)))
+        response = self.client.post('/ethereum/wallets/delete', {'modelpk': self.wallet1.pk})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        self.assertEquals(0, len(DefiWallet.objects.filter(user_id=self.user3.username)))
+
+    def test_post_delete_wallet_incorrect_network(self):
+        self.client.force_login(self.user1)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
+        response = self.client.post('/solana/wallets/delete', {'modelpk': self.wallet1.pk})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))

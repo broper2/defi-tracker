@@ -48,3 +48,33 @@ class SolanaValidatorTests(TestCase):
         self.assertEqual([254, 255, 256, 257, 258], response.context['data']['labels'])
         self.assertIn('form', response.context)
         self.assertTrue(response.context['form'].errors)
+
+    def test_post_delete_validator(self):
+        self.client.force_login(self.user1)
+        self.assertEquals(1, len(DefiValidator.objects.filter(user_id=self.user1.username)))
+        response = self.client.post('/solana/validators/delete', {'modelpk': self.validator1.pk})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(0, len(DefiValidator.objects.filter(user_id=self.user1.username)))
+
+    def test_post_delete_missing_validator(self):
+        self.client.force_login(self.user1)
+        self.assertEquals(1, len(DefiValidator.objects.filter(user_id=self.user1.username)))
+        response = self.client.post('/solana/validators/delete', {'modelpk': 1234567})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(1, len(DefiValidator.objects.filter(user_id=self.user1.username)))
+
+    def test_post_delete_validator_unauthenticated(self):
+        self.client.force_login(self.user3)
+        self.assertEquals(1, len(DefiValidator.objects.filter(user_id=self.user1.username)))
+        self.assertEquals(0, len(DefiValidator.objects.filter(user_id=self.user3.username)))
+        response = self.client.post('/solana/validators/delete', {'modelpk': self.validator1.pk})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(1, len(DefiValidator.objects.filter(user_id=self.user1.username)))
+        self.assertEquals(0, len(DefiValidator.objects.filter(user_id=self.user3.username)))
+
+    def test_post_delete_validator_incorrect_network(self):
+        self.client.force_login(self.user1)
+        self.assertEquals(1, len(DefiValidator.objects.filter(user_id=self.user1.username)))
+        response = self.client.post('/ethereum/validators/delete', {'modelpk': self.validator1.pk})
+        self.assertEqual(301, response.status_code)
+        self.assertEquals(1, len(DefiValidator.objects.filter(user_id=self.user1.username)))

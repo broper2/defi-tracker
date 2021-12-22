@@ -97,7 +97,7 @@ def delete_validator(request, network=None): #TODO make helpers private, move pu
         return redirect('validators', network=network, permanent=True)
     pk = request.POST['modelpk']
     validator = get_model_by_pk(DefiValidator, pk)
-    if not is_authenticated_to_delete(validator, request):
+    if not is_authenticated_to_delete(validator, request) or not is_correct_network(validator, network):
         return redirect('validators', network=network, permanent=True)
     validator.delete()
     return redirect('validators', network=network, permanent=True)
@@ -108,7 +108,7 @@ def delete_wallet(request, network=None): #TODO make helpers private, move publi
         return redirect('wallets', network=network, permanent=True)
     pk = request.POST['modelpk']
     wallet = get_model_by_pk(DefiWallet, pk)
-    if not is_authenticated_to_delete(wallet, request):
+    if not is_authenticated_to_delete(wallet, request) or not is_correct_network(wallet, network):
         return redirect('wallets', network=network, permanent=True)
     wallet.delete()
     return redirect('wallets', network=network, permanent=True)
@@ -117,6 +117,9 @@ def delete_wallet(request, network=None): #TODO make helpers private, move publi
 def is_authenticated_to_delete(model, request):
     current_user_id = request.user.username
     return model and model.user_id == current_user_id
+
+def is_correct_network(model, network):
+    return model.defi_network == network.lower()
 
 
 def get_model_by_pk(model_cls, pk):
