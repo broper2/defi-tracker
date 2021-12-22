@@ -23,9 +23,12 @@ LAMPORT_TO_SOL_RATE = 0.000000001
 
 WEI_TO_ETH_RATE = (1/10**18)
 
-BINANCE_SOL_PRICE_URL = 'https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDC'
+BINANCE_PRICE_URL = 'https://api.binance.com/api/v3/ticker/price'
 
-BINANCE_ETH_PRICE_URL = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDC' #TODO fix duplicates
+BINANCE_SOL_PARAMS = {'symbol': 'SOLUSDC'}
+
+BINANCE_ETH_PARAMS = {'symbol': 'ETHUSDC'}
+
 
 DEFAULT_DEFI_NETWORK = 'solana'
 
