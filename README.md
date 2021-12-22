@@ -12,7 +12,7 @@ Supported Functionalities:
       - The higher the performance metric, the better yield on tokens staked to that validator!
 
 In Development:
- - ENS tracking for Ethereum wallets
+ - ENS (Ethereum Name Service) tracking for Ethereum wallets
  - Eliminate display name entry for Solana validators, default to validators registered name
 
 To check it out in action, see below:
