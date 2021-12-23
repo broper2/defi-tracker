@@ -2,93 +2,118 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <div class="row">
+<div class="row">
         <div class="d-flex flex-column">
             <div class="pl-5">
-                <h2>Track new validator:</h2>
-                <form method="post" action="/{{ network }}/validators" class="data-form">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    {% if form.errors %}
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <p> {{ error }} </p>
-                            {% endfor %}
-                        {% endfor %}
-                    {% endif %}
-                    <button class="mt-3 btn btn-primary" type="submit">Submit</button>
-                </form>
+                {% if data %}
+                    {% for error in errors %}
+                        <div class="alert alert-danger text-center">
+                            <strong><i>{{ error|escape }}</i></strong>
+                        </div>
+                    {% endfor %}
+                    <canvas id="myChart" height="400" width="400"></canvas>
+                    <script>
+                        const data = {{ data|safe }};
+                        const ctx = document.getElementById('myChart').getContext('2d');
+                        const myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: data,
+                            options: {
+                                responsive: true,
+                                    interaction: {
+                                    mode: 'index',
+                                        intersect: false,
+                                },
+                                stacked: false,
+                                title: {
+                                    display: true,
+                                    text: '{{ network | capfirst }} Validator Tracker',},
+                                legend: {
+                                    display: true,
+                                    position: 'bottom'
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Validator Performance'
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: '{{ network | capfirst }} Epoch'
+                                        }
+                                    }],
+                                    y: {
+                                        type: 'linear',
+                                            display: true,
+                                            position: 'left',
+                                    },
+                                    y1: {
+                                        type: 'linear',
+                                            display: true,
+                                            position: 'right',
+
+                                            // grid line settings
+                                            grid: {
+                                            drawOnChartArea: false, // only want the grid lines for one axis to show up
+                                        },
+                                    },
+                                }
+                        },
+                    });
+                    </script>
+                {% endif %}
             </div>
         </div>
-        <div class="d-flex flex-column">
-                <div class="pl-5">
-                    {% if data %}
-                        <canvas id="myChart" height="400" width="400"></canvas>
-                        <script>
-                            const data = {{ data|safe }};
-                            const ctx = document.getElementById('myChart').getContext('2d');
-                            const myChart = new Chart(ctx, {
-                                type: 'line',
-                                data: data,
-                                options: {
-                                    responsive: true,
-                                        interaction: {
-                                        mode: 'index',
-                                            intersect: false,
-                                    },
-                                    stacked: false,
-                                    title: {
-                                        display: true,
-                                        text: '{{ network | capfirst }} Validator Tracker',},
-                                    legend: {
-                                        display: true,
-                                        position: 'bottom'
-                                    },
-                                    scales: {
-                                        yAxes: [{
-                                            scaleLabel: {
-                                                display: true,
-                                                labelString: 'Validator Performance'
-                                            }
-                                        }],
-                                        xAxes: [{
-                                            scaleLabel: {
-                                                display: true,
-                                                labelString: '{{ network | capfirst }} Epoch'
-                                            }
-                                        }],
-                                        y: {
-                                            type: 'linear',
-                                                display: true,
-                                                position: 'left',
-                                        },
-                                        y1: {
-                                            type: 'linear',
-                                                display: true,
-                                                position: 'right',
-
-                                                // grid line settings
-                                                grid: {
-                                                drawOnChartArea: false, // only want the grid lines for one axis to show up
-                                            },
-                                        },
-                                    }
-                            },
-                        });
-                        </script>
-                    {% endif %}
-                </div>
-            </div>
         <div class="d-flex flex-column pl-2">
-            <button type="button" class="btn-sm btn-light btn-info" data-toggle="modal" data-target="#recordModel">
-                <i class="fas fa-edit"></i>
+            <button type="button" class="btn-sm btn-success mt-2" data-toggle="modal" data-target="#addRecordModal">
+                <i class="fas fa-plus"></i>
             </button>
-            <!-- Delete Validator tracking modal -->
-            <div class="modal fade" id="recordModel" tabindex="-1" role="dialog" aria-labelledby="recordModelLabel" aria-hidden="true">
+            <button type="button" class="btn-sm btn-danger mt-2" data-toggle="modal" data-target="#deleteRecordModal">
+                <i class="fas fa-trash"></i>
+            </button>
+
+            <!-- Add Validator tracking modal -->
+            <div class="modal fade" id="addRecordModal" tabindex="-1" role="dialog" aria-labelledby="addRecordModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="recordModelLabel">Control validators</h5>
+                            <h5 class="modal-title" id="addRecordModalLabel">Add validators</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="/{{ network }}/validators" class="data-form">
+                                {% csrf_token %}
+                                <p>
+                                    <label for="id_validator_vote_pubkey">Validator vote pubkey:</label>
+                                    <input type="text" name="validator_vote_pubkey" maxlength="100" class="form-control" required="" id="id_validator_vote_pubkey">
+                                </p>
+                                <p>
+                                    <label for="id_display_name">Display name:</label>
+                                    <input type="text" name="display_name" maxlength="50" class="form-control" required="" id="id_display_name">
+                                </p>
+                                <p>
+                                    <label for="id_defi_network">Defi network:</label>
+                                    <input type="text" name="defi_network" value={{ network }} maxlength="50" class="form-control" required="" disabled="" id="id_defi_network">
+                                    <input type="hidden" name="user_id" value={{ form.user_id.value }} class="form-control" id="id_user_id">
+                                </p>
+                                <button class="mt-3 btn btn-primary" type="submit">Track</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Validator tracking modal -->
+            <div class="modal fade" id="deleteRecordModal" tabindex="-1" role="dialog" aria-labelledby="deleteRecordModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteRecordModalLabel">Remove validators</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>

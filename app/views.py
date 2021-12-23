@@ -53,8 +53,10 @@ def validators(request, network=None):
     modal_form_data = _get_delete_modal_form_data(tracked_validator_models)
     if not form:
         form = form_cls(current_user_id, network)
-    return render(request, 'validators.html', {'data': chart_data, 'form': form, 'network': network, 'modal_data': modal_form_data})
-
+    form_error_messages = _get_form_error_message(form.errors)
+    context = {'data': chart_data, 'form': form, 'network': network, 'modal_data': modal_form_data,
+               'errors': form_error_messages}
+    return render(request, 'validators.html', context)
 
 def wallets(request, network=None):
     if _is_invalid_network(network):
@@ -113,7 +115,7 @@ def _get_delete_modal_form_data(defi_models):
     return [{'key': model.pk, 'display_name': model.display_name} for model in defi_models]
 
 
-def _is_authenticated_to_delete(model, request):
+def _is_authenticated_to_delete(model, request): #TODO consider making a utils.django files
     current_user_id = request.user.username
     return model and model.user_id == current_user_id
 
@@ -125,3 +127,11 @@ def _is_correct_network(model, network):
 def _get_model_by_pk(model_cls, pk):
     model_query = model_cls.objects.filter(pk=pk)
     return model_query[0] if model_query else None
+
+def _get_form_error_message(error_dict):
+    error_messages = []
+    if error_dict:
+        validation_errors = error_dict.as_data()['__all__']
+        for error in validation_errors:
+            error_messages.append(error.message)
+    return error_messages

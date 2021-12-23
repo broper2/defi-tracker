@@ -17,16 +17,10 @@ class DefiValidatorForm(forms.ModelForm):
 
     def __init__(self, user, network, *args, **kwargs):
         super(DefiValidatorForm, self).__init__(*args, **kwargs)
-        self.initial['user_id'] = user
-        self.initial['defi_network'] = network
         self.interface = self._network_interface_cls.instance()
         self.valid_pubkeys = self.interface.vote_account_keys
         self.initial['user_id'] = user
         self.initial['defi_network'] = network
-        self.fields['validator_vote_pubkey'].widget.attrs['class'] = 'form-control'
-        self.fields['display_name'].widget.attrs['class'] = 'form-control'
-        self.fields['user_id'].widget.attrs['class'] = 'form-control'
-        self.fields['defi_network'].widget.attrs['class'] = 'form-control'
 
     def clean(self):
         super().clean()
