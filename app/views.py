@@ -53,7 +53,7 @@ def validators(request, network=None):
     modal_form_data = _get_delete_modal_form_data(tracked_validator_models)
     if not form:
         form = form_cls(current_user_id, network)
-    form_error_messages = _get_form_error_message(form.errors)
+    form_error_messages = _get_form_error_message(form.errors) if form.errors else []
     context = {'data': chart_data, 'form': form, 'network': network, 'modal_data': modal_form_data,
                'errors': form_error_messages}
     return render(request, 'validators.html', context)
@@ -75,7 +75,10 @@ def wallets(request, network=None):
     modal_form_data = _get_delete_modal_form_data(tracked_wallet_models)
     if not form:
         form = form_cls(current_user_id, network)
-    return render(request, 'wallets.html', {'data': table_data, 'form': form, 'network': network, 'modal_data': modal_form_data})
+    form_error_messages = _get_form_error_message(form.errors) if form.errors else []
+    context = {'data': table_data, 'form': form, 'network': network, 'modal_data': modal_form_data,
+               'errors': form_error_messages}
+    return render(request, 'wallets.html', context)
 
 
 def delete_validator(request, network=None):

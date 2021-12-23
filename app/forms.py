@@ -64,11 +64,6 @@ class DefiWalletForm(forms.ModelForm):
         self.initial['user_id'] = user
         self.initial['defi_network'] = network
         self.interface = self._network_interface_cls.instance(initial_validator_data_cache=False)
-        self.fields['wallet_pubkey'].widget.attrs['class'] = 'form-control'
-        self.fields['display_name'].widget.attrs['class'] = 'form-control'
-        self.fields['user_id'].widget.attrs['class'] = 'form-control'
-        self.fields['staked'].widget.attrs['class'] = 'mt-2'
-        self.fields['defi_network'].widget.attrs['class'] = 'form-control'
 
     @property
     def _network_interface_cls(self):
@@ -122,6 +117,6 @@ class CustomUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
 
-        self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['username'].widget.attrs['class'] = 'form-control' #TODO can the user create form look better?
         self.fields['password1'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].widget.attrs['class'] = 'form-control'
