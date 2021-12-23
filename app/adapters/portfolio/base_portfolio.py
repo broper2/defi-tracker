@@ -6,14 +6,6 @@ from app.utils.rounding import round_crypto, round_usd
 
 class CompositeBase(ABC):
 
-    @property
-    def composite_data(self):
-        data = []
-        for child in self._children:
-            data.append(child.get_component_data())
-        data.append(self.get_component_data())
-        return data
-
     def get_component_data(self):
         return {
             'display_name': self.display_name,
@@ -54,6 +46,14 @@ class DefiPortfolioAdapterBase(CompositeBase):
         super().__init__(*args, **kwargs)
         self.tracked_wallets = tracked_wallets
         self._child_adapters = self._build_child_adapters(self.tracked_wallets, self._usd_rate)
+
+    @property
+    def composite_data(self):
+        data = []
+        for child in self._children:
+            data.append(child.get_component_data())
+        data.append(self.get_component_data())
+        return data
 
     @property
     def binance_api(self):
