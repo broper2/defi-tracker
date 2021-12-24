@@ -59,6 +59,7 @@ def validators(request, network=None):
     context = {'data': chart_data, 'form': form, 'network': network, 'modal_data': modal_form_data, 'error': error}
     return render(request, 'validators.html', context)
 
+
 def wallets(request, network=None):
     if _is_invalid_network(network):
         return defi_index(request)
@@ -82,7 +83,7 @@ def wallets(request, network=None):
 
 
 def delete_validator(request, network=None):
-    if not request.method == 'POST':
+    if not request.method == 'POST' or 'modelpk' not in request.POST:
         return redirect('validators', network=network, permanent=True)
     pk = request.POST['modelpk']
     validator = get_model_by_pk(DefiValidator, pk)
@@ -93,7 +94,7 @@ def delete_validator(request, network=None):
 
 
 def delete_wallet(request, network=None):
-    if not request.method == 'POST':
+    if not request.method == 'POST' or 'modelpk' not in request.POST:
         return redirect('wallets', network=network, permanent=True)
     pk = request.POST['modelpk']
     wallet = get_model_by_pk(DefiWallet, pk)
