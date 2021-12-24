@@ -29,7 +29,4 @@ BINANCE_SOL_PARAMS = {'symbol': 'SOLUSDC'}
 
 BINANCE_ETH_PARAMS = {'symbol': 'ETHUSDC'}
 
-
-DEFAULT_DEFI_NETWORK = 'solana'
-
 SUPPORTED_DEFI_NETWORKS = ['solana', 'ethereum']

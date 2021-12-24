@@ -4,9 +4,27 @@
 <div class="row">
     <div class="d-flex flex-column">
         <h2>Create account to start tracking!</h2>
+        {% if error %}
+            <div class="alert alert-danger text-center mt-3">
+                <strong><i>{{ error|escape }}</i></strong>
+            </div>
+        {% endif %}
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <p>
+                <label for="id_username">Username:</label>
+                <input type="text" name="username" maxlength="150" autofocus="" class="form-control" required="" id="id_username" style="background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+                <span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+            </p>
+            <p>
+                <label for="id_password1">Password:</label>
+                <input type="password" name="password1" autocomplete="new-password" class="form-control" required="" id="id_password1" style=" background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+            <p></p>
+            <p>
+                <label for="id_password2">Password confirmation:</label>
+                <input type="password" name="password2" autocomplete="new-password" class="form-control" required="" id="id_password2" style="background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;">
+                <span class="helptext">Enter the same password as before, for verification.</span>
+            </p>
             <div class="pt-5">
                 <button type="submit" class="btn btn-primary">Sign up</button>
             </div>

@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from app.adapters.validator.builder import get_validator_adapter
 from app.adapters.portfolio.builder import get_portfolio_adapter
 from app.basetypes import DefiWalletData, DefiValidatorData
-from app.config.constants import DEFAULT_DEFI_NETWORK, SUPPORTED_DEFI_NETWORKS
+from app.config.constants import SUPPORTED_DEFI_NETWORKS
 from app.forms import get_wallet_form_cls, get_validator_form_cls
 from app.models import DefiValidator, DefiWallet
 from app.utils.django import get_validator_records, get_form_error_message, get_wallet_records, get_model_by_pk
@@ -29,7 +29,8 @@ def create_user(request):
             return defi_index(request)
     else:
         form = CustomUserCreationForm()
-    return render(request, 'registration/create_user.html', {'form': form, 'network': DEFAULT_DEFI_NETWORK})
+    error = get_form_error_message(form.errors)
+    return render(request, 'registration/create_user.html', {'form': form, 'error': error})
 
 
 def defi_index(request, **kwargs):
@@ -54,9 +55,8 @@ def validators(request, network=None):
     modal_form_data = _get_delete_modal_form_data(tracked_validator_models)
     if not form:
         form = form_cls(current_user_id, network)
-    form_error_messages = get_form_error_message(form.errors) if form.errors else []
-    context = {'data': chart_data, 'form': form, 'network': network, 'modal_data': modal_form_data,
-               'errors': form_error_messages}
+    error = get_form_error_message(form.errors)
+    context = {'data': chart_data, 'form': form, 'network': network, 'modal_data': modal_form_data, 'error': error}
     return render(request, 'validators.html', context)
 
 def wallets(request, network=None):
@@ -76,9 +76,8 @@ def wallets(request, network=None):
     modal_form_data = _get_delete_modal_form_data(tracked_wallet_models)
     if not form:
         form = form_cls(current_user_id, network)
-    form_error_messages = get_form_error_message(form.errors) if form.errors else []
-    context = {'data': table_data, 'form': form, 'network': network, 'modal_data': modal_form_data,
-               'errors': form_error_messages}
+    error = get_form_error_message(form.errors)
+    context = {'data': table_data, 'form': form, 'network': network, 'modal_data': modal_form_data, 'error': error}
     return render(request, 'wallets.html', context)
 
 

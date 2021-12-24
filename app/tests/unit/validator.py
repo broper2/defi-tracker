@@ -38,7 +38,7 @@ class SolanaValidatorTests(TestCase):
         self.assertEquals('name3', response.context['data']['datasets'][1]['label'])
         self.assertEqual([254, 255, 256, 257, 258], response.context['data']['labels'])
         self.assertIn('form', response.context)
-        self.assertFalse(response.context['form'].errors)
+        self.assertFalse(response.context['error'])
 
     def test_post_user_invalid_validator(self):
         self.client.force_login(self.user1)
@@ -47,7 +47,7 @@ class SolanaValidatorTests(TestCase):
         self.assertEqual('name1', response.context['data']['datasets'][0]['label'])
         self.assertEqual([254, 255, 256, 257, 258], response.context['data']['labels'])
         self.assertIn('form', response.context)
-        self.assertTrue(response.context['form'].errors)
+        self.assertEqual('Invalid vote account pubkey', response.context['error'])
 
     def test_post_delete_validator(self):
         self.client.force_login(self.user1)

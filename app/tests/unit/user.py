@@ -16,23 +16,25 @@ class CreateUserTests(TestCase):
         self.assertFalse(response.context['form'].errors)
         user = get_user(self.client)
         self.assertFalse(user.is_authenticated)
+        self.assertFalse(response.context['error'])
 
     def test_post_valid_user_info(self):
-        self.client.post('/create_user', {'username': 'user1234', 'password1': 'skdj345%kjdf', 'password2': 'skdj345%kjdf'})
+        response = response = self.client.post('/create_user', {'username': 'user1234', 'password1': 'skdj345%kjdf', 'password2': 'skdj345%kjdf'})
         self.assertEquals(2, len(User.objects.all()))
         user = get_user(self.client)
         self.assertEquals('user1234', user.username)
         self.assertTrue(user.is_authenticated)
 
     def test_post_invalid_passwords(self):
-        self.client.post('/create_user', {'username': 'user1234', 'password1': 'skdj345%kjdf', 'password2': 'different123'})
+        response = self.client.post('/create_user', {'username': 'user1234', 'password1': 'skdj345%kjdf', 'password2': 'different123'})
         self.assertEquals(1, len(User.objects.all()))
         user = get_user(self.client)
         self.assertFalse(user.is_authenticated)
+        self.assertEquals('The two password fields didn’t match.', response.context['error'])
 
     def test_post_existing_user(self):
-        self.client.post('/create_user', {'username': 'user1', 'password1': 'skdj345%kjdf', 'password2': 'skdj345%kjdf'})
+        response = self.client.post('/create_user', {'username': 'user1', 'password1': 'skdj345%kjdf', 'password2': 'skdj345%kjdf'})
         self.assertEquals(1, len(User.objects.all()))
         user = get_user(self.client)
         self.assertFalse(user.is_authenticated)
-
+        self.assertEquals('A user with that username already exists.', response.context['error'])

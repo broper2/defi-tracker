@@ -6,11 +6,11 @@
         <div class="d-flex flex-column">
             <div class="pl-5">
                 {% if data %}
-                    {% for error in errors %}
-                        <div class="alert alert-danger text-center">
+                    {% if error %}
+                        <div class="alert alert-danger text-center mt-3">
                             <strong><i>{{ error|escape }}</i></strong>
                         </div>
-                    {% endfor %}
+                    {% endif %}
                     <canvas id="myChart" height="500" width="500"></canvas>
                     <script>
                         const data = {{ data|safe }};

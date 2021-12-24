@@ -15,9 +15,8 @@ def get_model_by_pk(model_cls, pk):
 
 
 def get_form_error_message(error_dict):
-    error_messages = []
     if error_dict:
-        validation_errors = error_dict.as_data()['__all__']
-        for error in validation_errors:
-            error_messages.append(error.message)
-    return error_messages
+        for field, errors in error_dict.items():
+            if errors:
+                return errors[0]
+    return ''

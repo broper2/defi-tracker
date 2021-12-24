@@ -50,7 +50,7 @@ class SolanaWalletTests(TestCase):
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
-        self.assertFalse(response.context['form'].errors)
+        self.assertFalse(response.context['error'])
 
     def test_post_invalid_wallet_pubkey(self):
         self.client.force_login(self.user1)
@@ -61,7 +61,7 @@ class SolanaWalletTests(TestCase):
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
-        self.assertTrue(response.context['form'].errors)
+        self.assertTrue('Invalid wallet pubkey', response.context['error'])
 
     def test_post_delete_wallet(self):
         self.client.force_login(self.user1)
@@ -135,7 +135,7 @@ class EthereumWalletTests(TestCase):
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
-        self.assertFalse(response.context['form'].errors)
+        self.assertFalse(response.context['error'])
 
     def test_post_invalid_wallet_pubkey(self):
         self.client.force_login(self.user1)
@@ -148,7 +148,7 @@ class EthereumWalletTests(TestCase):
         ]
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
-        self.assertTrue(response.context['form'].errors)
+        self.assertTrue('Invalid wallet pubkey', response.context['error'])
 
     def test_post_delete_wallet(self):
         self.client.force_login(self.user1)
