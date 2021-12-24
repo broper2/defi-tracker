@@ -1,8 +1,8 @@
 import logging
 
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
 
-from app.forms import CustomUserCreationForm
 from django.shortcuts import render, redirect
 
 from app.adapters.validator.builder import get_validator_adapter
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 def create_user(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -28,7 +28,7 @@ def create_user(request):
             login(request, user)
             return defi_index(request)
     else:
-        form = CustomUserCreationForm()
+        form = UserCreationForm()
     error = get_form_error_message(form.errors)
     return render(request, 'registration/create_user.html', {'form': form, 'error': error})
 

@@ -106,17 +106,3 @@ def get_wallet_form_cls(network):
         'ETHEREUM': EthereumWalletForm,
     }
     return validator_form_map[network.upper()]
-
-
-class CustomUserCreationForm(UserCreationForm):
-
-    class Meta:
-        model = User
-        fields = ('username', 'password1', 'password2')
-
-    def __init__(self, *args, **kwargs):
-        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
-
-        self.fields['username'].widget.attrs['class'] = 'form-control' #TODO can the user create form look better?
-        self.fields['password1'].widget.attrs['class'] = 'form-control'
-        self.fields['password2'].widget.attrs['class'] = 'form-control'
