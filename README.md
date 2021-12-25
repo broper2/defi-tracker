@@ -12,8 +12,8 @@ Supported Functionalities:
       - The higher the performance metric, the better yield on tokens staked to that validator!
 
 In Development:
+ - Asynchronous blockchain network interactions
  - ENS (Ethereum Name Service) tracking for Ethereum wallets
- - Eliminate display name entry for Solana validators, default to validators registered name
 
 To check it out in action, see below:
   - Barring any maintenance, DeFi Tracker is deployed to https://intense-brook-56676.herokuapp.com/
