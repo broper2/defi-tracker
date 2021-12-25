@@ -1,6 +1,6 @@
 from app.adapters.portfolio.base_portfolio import DefiPortfolioAdapterBase, DefiWalletAdapterBase
 from app.config.constants import WEI_TO_ETH_RATE
-from app.external.ethereum_network import EthereumNetworkInterface
+from app.external.sync.ethereum_network import EthereumNetworkInterface
 
 
 class EthereumPortfolioDataAdapter(DefiPortfolioAdapterBase):

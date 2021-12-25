@@ -1,10 +1,8 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-from .external.ethereum_network import EthereumNetworkInterface
-from .external.solana_network import SolanaNetworkInterface
+from app.external.sync.ethereum_network import EthereumNetworkInterface
+from app.external.sync.solana_network import SolanaNetworkInterface
 from .models import DefiValidator, DefiWallet
 
 
