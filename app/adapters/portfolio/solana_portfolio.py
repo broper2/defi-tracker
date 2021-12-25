@@ -1,6 +1,6 @@
 from app.adapters.portfolio.base_portfolio import DefiPortfolioAdapterBase, DefiWalletAdapterBase
 from app.config.constants import LAMPORT_TO_SOL_RATE
-from app.external.sync.solana_network import SolanaNetworkInterface
+from app.external.solana_network import SolanaNetworkInterface
 
 
 class SolanaPortfolioDataAdapter(DefiPortfolioAdapterBase):

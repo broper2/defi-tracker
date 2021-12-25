@@ -6,7 +6,7 @@ from solana.rpc.api import Client
 
 from app.config.constants import SOLANA_RPC_KEYS, SOLANA_VALIDATOR_HISTORY_LENGTH
 from app.exceptions.solana_external import SolanaExternalNetworkException
-from app.external.sync.defi_network_base import DefiNetworkInterfaceBase
+from app.external.defi_network_base import DefiNetworkInterfaceBase
 from app.utils.error_handling import handle_exceptions
 from app.utils.timed_cache import timed_cache
 
