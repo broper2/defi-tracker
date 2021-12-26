@@ -2,7 +2,7 @@ from functools import cached_property
 
 from app.adapters.portfolio.sync_adapters.base_portfolio import DefiPortfolioAdapterBase, DefiWalletAdapterBase
 from app.config.constants import LAMPORT_TO_SOL_RATE
-from app.external.solana_network import SolanaNetworkInterface
+from app.external.sync_interfaces.solana_network import SolanaNetworkInterface
 
 
 class SolanaPortfolioDataAdapter(DefiPortfolioAdapterBase):

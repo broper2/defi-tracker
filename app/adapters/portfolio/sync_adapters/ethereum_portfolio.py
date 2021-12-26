@@ -2,7 +2,7 @@ from functools import cached_property
 
 from app.adapters.portfolio.sync_adapters.base_portfolio import DefiPortfolioAdapterBase, DefiWalletAdapterBase
 from app.config.constants import WEI_TO_ETH_RATE
-from app.external.ethereum_network import EthereumNetworkInterface
+from app.external.sync_interfaces.ethereum_network import EthereumNetworkInterface
 
 
 class EthereumPortfolioDataAdapter(DefiPortfolioAdapterBase):

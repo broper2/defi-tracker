@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import asyncio
 from functools import cached_property
 
-from app.external.binance_api import BinanceApiInterface
+from app.external.sync_interfaces.binance_api import BinanceApiInterface
 from app.utils.rounding import round_crypto, round_usd
 
 

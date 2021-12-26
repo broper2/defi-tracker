@@ -1,7 +1,7 @@
 from app.adapters.validator.solana_validator import SolanaValidatorDataAdapter
 from app.basetypes import DefiValidatorData
 from app.config.constants import SOLANA_VALIDATOR_HISTORY_LENGTH
-from app.external.solana_network import SolanaNetworkInterface
+from app.external.sync_interfaces.solana_network import SolanaNetworkInterface
 
 
 def get_top_validators(num_validators=5, num_epochs=5):

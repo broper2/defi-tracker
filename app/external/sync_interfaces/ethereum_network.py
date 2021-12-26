@@ -16,10 +16,9 @@ class EthereumNetworkInterface(DefiNetworkInterfaceBase):
 
     def is_valid_account_pubkey(self, pubkey):
         try:
-            self.eth.get_balance(pubkey)
+            return bool(self.eth.get_balance(pubkey))
         except InvalidAddress:
             return False
-        return True
 
     @handle_exceptions(EthereumExternalNetworkException, InvalidAddress)
     def get_account_balance(self, pubkey):

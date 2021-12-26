@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from app.models import DefiValidator
 from .constants import MOCK_VALIDATOR_DATA
 
-@patch('app.external.solana_network.SolanaNetworkInterface._fetch_and_cache_validator_data', new=lambda *args, **kwargs: MOCK_VALIDATOR_DATA)
-@patch('app.external.solana_network.SolanaNetworkInterface._request_last_epoch', new=lambda *args, **kwargs: 258)
+@patch('app.external.sync_interfaces.solana_network.SolanaNetworkInterface._fetch_and_cache_validator_data', new=lambda *args, **kwargs: MOCK_VALIDATOR_DATA)
+@patch('app.external.sync_interfaces.solana_network.SolanaNetworkInterface._request_last_epoch', new=lambda *args, **kwargs: 258)
 class SolanaValidatorTests(TestCase):
 
     @classmethod

@@ -1,7 +1,7 @@
 import numpy as np
 
 from app.adapters.validator.base_validator import ValidatorAdapterBase
-from app.external.solana_network import SolanaNetworkInterface
+from app.external.sync_interfaces.solana_network import SolanaNetworkInterface
 
 
 class SolanaValidatorDataAdapter(ValidatorAdapterBase):

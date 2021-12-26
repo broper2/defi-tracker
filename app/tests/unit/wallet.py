@@ -8,10 +8,10 @@ def mock_is_active_pubkey(interface, pubkey):
     return pubkey != 'invalid_pubkey'
 
 
-@patch('app.external.binance_api.BinanceApiInterface._get_sol_price', new=lambda *args, **kwargs: 1.545454)
+@patch('app.external.sync_interfaces.binance_api.BinanceApiInterface._get_sol_price', new=lambda *args, **kwargs: 1.545454)
 @patch('app.external.async_interfaces.solana_network_async.AsyncSolanaNetworkInterface._get_account_balance')
-@patch('app.external.solana_network.SolanaNetworkInterface._is_connected', new=lambda *args, **kwargs: True)
-@patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
+@patch('app.external.sync_interfaces.solana_network.SolanaNetworkInterface._is_connected', new=lambda *args, **kwargs: True)
+@patch('app.external.sync_interfaces.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
 class SolanaWalletTests(TestCase):
 
     @classmethod
@@ -98,9 +98,9 @@ class SolanaWalletTests(TestCase):
         self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
 
 
-@patch('app.external.binance_api.BinanceApiInterface._get_eth_price', new=lambda *args, **kwargs: 1.545454)
-@patch('app.external.ethereum_network.EthereumNetworkInterface.get_account_balance', new=lambda *args, **kwargs: 2 * (10**18))
-@patch('app.external.ethereum_network.EthereumNetworkInterface.is_valid_account_pubkey', new=mock_is_active_pubkey)
+@patch('app.external.sync_interfaces.binance_api.BinanceApiInterface._get_eth_price', new=lambda *args, **kwargs: 1.545454)
+@patch('app.external.sync_interfaces.ethereum_network.EthereumNetworkInterface.get_account_balance', new=lambda *args, **kwargs: 2 * (10**18))
+@patch('app.external.sync_interfaces.ethereum_network.EthereumNetworkInterface.is_valid_account_pubkey', new=mock_is_active_pubkey)
 class EthereumWalletTests(TestCase):
 
     @classmethod
