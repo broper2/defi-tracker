@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from abc import ABC, abstractmethod
 
 from app.external.binance_api import BinanceApiInterface
@@ -44,8 +46,7 @@ class DefiPortfolioAdapterBase(CompositeBase):
 
     def __init__(self, tracked_wallets, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.tracked_wallets = tracked_wallets
-        self._child_adapters = self._build_child_adapters(self.tracked_wallets, self._usd_rate)
+        self._child_adapters = self._build_child_adapters(tracked_wallets, self._usd_rate)
 
     @property
     def composite_data(self):
@@ -56,7 +57,7 @@ class DefiPortfolioAdapterBase(CompositeBase):
         return data
 
     @property
-    def binance_api(self):
+    def _binance_api(self):
         return BinanceApiInterface.instance()
 
     @property
@@ -90,7 +91,7 @@ class DefiPortfolioAdapterBase(CompositeBase):
     def staked(self):
         return 'N/A'
 
-    @property
+    @cached_property
     @abstractmethod
     def _usd_rate(self):
         raise NotImplementedError

@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import patch, AsyncMock
 from django.test import TestCase
 from django.contrib.auth.models import User
 from app.models import DefiWallet
@@ -9,7 +9,7 @@ def mock_is_active_pubkey(interface, pubkey):
 
 
 @patch('app.external.binance_api.BinanceApiInterface._get_sol_price', new=lambda *args, **kwargs: 1.545454)
-@patch('app.external.solana_network.SolanaNetworkInterface._get_account_balance', new=lambda *args, **kwargs: 2000000000)
+@patch('app.external.async_interfaces.solana_network_async.AsyncSolanaNetworkInterface._get_account_balance')
 @patch('app.external.solana_network.SolanaNetworkInterface._is_connected', new=lambda *args, **kwargs: True)
 @patch('app.external.solana_network.SolanaNetworkInterface._is_active_pubkey', new=mock_is_active_pubkey)
 class SolanaWalletTests(TestCase):
@@ -22,7 +22,8 @@ class SolanaWalletTests(TestCase):
         cls.wallet2 = DefiWallet.objects.create(wallet_pubkey='pubkey2', display_name='name2', user_id='user2', staked=False, defi_network='solana')
         cls.wallet2 = DefiWallet.objects.create(wallet_pubkey='pubkey21', display_name='name21', user_id='user1', staked=False, defi_network='ethereum')
 
-    def test_get_user_with_wallets(self):
+    def test_get_user_with_wallets(self, mock_balance):
+        mock_balance.side_effect = AsyncMock(return_value=2000000000)
         self.client.force_login(self.user1)
         response = self.client.get('/solana/wallets')
         expected_data = [
@@ -32,13 +33,15 @@ class SolanaWalletTests(TestCase):
         self.assertEquals(expected_data, response.context['data'])
         self.assertIn('form', response.context)
 
-    def test_get_user_without_wallets(self):
+    def test_get_user_without_wallets(self, mock_balance):
+        mock_balance.side_effect = AsyncMock(return_value=2000000000)
         self.client.force_login(self.user3)
         response = self.client.get('/solana/wallets')
         self.assertEquals([{'display_name': 'Portfolio Total', 'token': 0, 'usd': 0, 'staked': 'N/A'}], response.context['data'])
         self.assertIn('form', response.context)
 
-    def test_post_valid_wallet_pubkey(self):
+    def test_post_valid_wallet_pubkey(self, mock_balance):
+        mock_balance.side_effect = AsyncMock(return_value=2000000000)
         self.client.force_login(self.user1)
         response = self.client.post('/solana/wallets',
                                     {'wallet_pubkey': 'pubkey3', 'display_name': 'name3', 'user_id': 'user1',
@@ -52,7 +55,8 @@ class SolanaWalletTests(TestCase):
         self.assertIn('form', response.context)
         self.assertFalse(response.context['error'])
 
-    def test_post_invalid_wallet_pubkey(self):
+    def test_post_invalid_wallet_pubkey(self, mock_balance):
+        mock_balance.side_effect = AsyncMock(return_value=2000000000)
         self.client.force_login(self.user1)
         response = self.client.post('/solana/wallets', {'wallet_pubkey': 'invalid_pubkey', 'display_name': 'name4', 'user_id': 'user1'})
         expected_data = [
@@ -63,21 +67,21 @@ class SolanaWalletTests(TestCase):
         self.assertIn('form', response.context)
         self.assertTrue('Invalid wallet pubkey', response.context['error'])
 
-    def test_post_delete_wallet(self):
+    def test_post_delete_wallet(self, mock_balance):
         self.client.force_login(self.user1)
         self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
         response = self.client.post('/solana/wallets/delete', {'modelpk': self.wallet1.pk})
         self.assertEqual(301, response.status_code)
         self.assertEquals(1, len(DefiWallet.objects.filter(user_id=self.user1.username)))
 
-    def test_post_delete_missing_wallet(self):
+    def test_post_delete_missing_wallet(self, mock_balance):
         self.client.force_login(self.user1)
         self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
         response = self.client.post('/solana/wallets/delete', {'modelpk': 1234567})
         self.assertEqual(301, response.status_code)
         self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
 
-    def test_post_delete_wallet_unauthenticated(self):
+    def test_post_delete_wallet_unauthenticated(self, mock_balance):
         self.client.force_login(self.user3)
         self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
         self.assertEquals(0, len(DefiWallet.objects.filter(user_id=self.user3.username)))
@@ -86,7 +90,7 @@ class SolanaWalletTests(TestCase):
         self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
         self.assertEquals(0, len(DefiWallet.objects.filter(user_id=self.user3.username)))
 
-    def test_post_delete_wallet_incorrect_network(self):
+    def test_post_delete_wallet_incorrect_network(self, mock_balance):
         self.client.force_login(self.user1)
         self.assertEquals(2, len(DefiWallet.objects.filter(user_id=self.user1.username)))
         response = self.client.post('/ethereum/wallets/delete', {'modelpk': self.wallet1.pk})

@@ -1,13 +1,15 @@
-from app.adapters.portfolio.base_portfolio import DefiPortfolioAdapterBase, DefiWalletAdapterBase
+from functools import cached_property
+
+from app.adapters.portfolio.sync_adapters.base_portfolio import DefiPortfolioAdapterBase, DefiWalletAdapterBase
 from app.config.constants import WEI_TO_ETH_RATE
 from app.external.ethereum_network import EthereumNetworkInterface
 
 
 class EthereumPortfolioDataAdapter(DefiPortfolioAdapterBase):
 
-    @property
+    @cached_property
     def _usd_rate(self):
-        return self.binance_api.get_eth_usd_rate()
+        return self._binance_api.get_eth_usd_rate()
 
     @property
     def _child_adapter_cls(self):
