@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
 from app.adapters.validator.builder import get_validator_adapter
-from app.adapters.portfolio.builder import get_portfolio_adapter
+from app.adapters.wallet.builder import get_portfolio_adapter
 from app.basetypes import DefiWalletData, DefiValidatorData
 from app.config.constants import SUPPORTED_DEFI_NETWORKS
 from app.forms import get_wallet_form_cls, get_validator_form_cls

@@ -1,14 +1,12 @@
-from functools import cached_property
-
-from app.adapters.portfolio.async_adapters.base_portfolio_async import AsyncDefiPortfolioAdapterBase, AsyncDefiWalletAdapterBase
+from app.adapters.wallet.async_adapters.base_portfolio_async import DefiPortfolioAdapterAsyncBase
+from app.adapters.wallet.async_adapters.base_wallet_async import DefiWalletAdapterAsyncBase
 from app.config.constants import LAMPORT_TO_SOL_RATE
 from app.external.async_interfaces.solana_network_async import AsyncSolanaNetworkInterface
 
 
-class AsyncSolanaPortfolioDataAdapter(AsyncDefiPortfolioAdapterBase):
+class AsyncSolanaPortfolioDataAdapter(DefiPortfolioAdapterAsyncBase):
 
-    @cached_property
-    def _usd_rate(self):
+    def _get_portfolio_usd_rate(self):
         return self._binance_api.get_sol_usd_rate()
 
     @property
@@ -16,7 +14,7 @@ class AsyncSolanaPortfolioDataAdapter(AsyncDefiPortfolioAdapterBase):
         return AsyncSolanaWalletDataAdapter
 
 
-class AsyncSolanaWalletDataAdapter(AsyncDefiWalletAdapterBase):
+class AsyncSolanaWalletDataAdapter(DefiWalletAdapterAsyncBase):
 
     @property
     def _network_interface_cls(self):
@@ -27,5 +25,5 @@ class AsyncSolanaWalletDataAdapter(AsyncDefiWalletAdapterBase):
         return dict(initial_validator_data_cache=False)
 
     async def _crypto_currency_value(self):
-        lamports = await self.interface.get_account_balance(self.wallet_key)
+        lamports = await self._interface.get_account_balance(self._wallet_key)
         return lamports * LAMPORT_TO_SOL_RATE

@@ -2,8 +2,8 @@ from time import perf_counter
 
 from contextlib import contextmanager
 
-from app.adapters.portfolio.async_adapters.solana_portfolio_async import AsyncSolanaPortfolioDataAdapter
-from app.adapters.portfolio.sync_adapters.solana_portfolio import SolanaPortfolioDataAdapter
+from app.adapters.wallet.async_adapters.solana_async import AsyncSolanaPortfolioDataAdapter
+from app.adapters.wallet.sync_adapters.solana_renamepy import SolanaPortfolioDataAdapter
 from app.basetypes import DefiWalletData
 
 
