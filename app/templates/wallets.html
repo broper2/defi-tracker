@@ -62,7 +62,11 @@
                             <form method="post" action="/{{ network }}/wallets" class="data-form">
                                 {% csrf_token %}
                                 <p>
-                                    <label for="id_wallet_pubkey">Wallet pubkey:</label>
+                                    {% if network == "ethereum" %}
+                                        <label for="id_wallet_pubkey">Wallet pubkey or ENS domain:</label>
+                                    {%  else %}
+                                        <label for="id_wallet_pubkey">Wallet pubkey:</label>
+                                    {%  endif %}
                                     <input type="text" name="wallet_pubkey" maxlength="100" class="form-control" required="" id="id_wallet_pubkey">
                                 </p>
                                 <p>
