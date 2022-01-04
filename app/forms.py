@@ -70,7 +70,7 @@ class DefiWalletForm(forms.ModelForm):
     def clean(self):
         super().clean()
         if self._is_invalid_pubkey(self.cleaned_data['wallet_pubkey']):
-            raise ValidationError('Invalid wallet pubkey')
+            raise ValidationError('Invalid wallet key')
         return self.cleaned_data
 
     def _is_invalid_pubkey(self, pubkey):

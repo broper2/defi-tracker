@@ -3,7 +3,7 @@ from time import perf_counter
 from contextlib import contextmanager
 
 from app.adapters.wallet.async_adapters.solana_async import AsyncSolanaPortfolioDataAdapter
-from app.adapters.wallet.sync_adapters.solana_renamepy import SolanaPortfolioDataAdapter
+from app.adapters.wallet.sync_adapters.solana_sync import SolanaPortfolioDataAdapter
 from app.basetypes import DefiWalletData
 
 
@@ -37,7 +37,5 @@ def time_solana_portfolio_composite_data_async(num_wallets):
 
 
 if __name__ == '__main__':
-    print('sync')
-    print(time_solana_portfolio_composite_data_sync(10)())
-    print('async')
-    print(time_solana_portfolio_composite_data_async(10)())
+    print(f'sync runtime - {time_solana_portfolio_composite_data_sync(10)()}')
+    print(f'async runtime - {time_solana_portfolio_composite_data_async(10)()}')
